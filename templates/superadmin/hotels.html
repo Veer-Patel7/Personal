@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Approve Hotels</title>
+</head>
+<body>
+
+<h2>Hotel Approval Panel</h2>
+<hr>
+
+<table border="1" cellpadding="10">
+<tr>
+    <th>Hotel Name</th>
+    <th>Owner</th>
+    <th>City</th>
+    <th>Status</th>
+    <th>ID Proof 1</th>
+    <th>ID Proof 2</th>
+    <th>Action</th>
+</tr>
+
+{% for h in hotels %}
+<tr>
+    <td>{{ h.hotel_name }}</td>
+    <td>{{ h.owner.email }}</td>
+    <td>{{ h.location }}</td>
+
+    <td>{{ h.status }}</td>
+
+    <td>
+        <a href="{{ h.id_proof1.url }}" target="_blank">View</a>
+    </td>
+
+    <td>
+        <a href="{{ h.id_proof2.url }}" target="_blank">View</a>
+    </td>
+
+    <td>
+        {% if h.status == "pending" %}
+            <a href="/super/approve-hotel/{{ h.id }}/">Approve</a> |
+            <a href="/super/block-hotel/{{ h.id }}/">Reject</a>
+
+        {% elif h.status == "approved" %}
+            <a href="/super/block-hotel/{{ h.id }}/">Block</a>
+
+        {% elif h.status == "blocked" %}
+            <a href="/super/approve-hotel/{{ h.id }}/">Unblock</a>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+<br><br>
+<a href="/super/dashboard/">⬅ Back to Dashboard</a>
+
+</body>
+</html>

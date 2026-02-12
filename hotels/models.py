@@ -4,18 +4,20 @@ from accounts.models import User
 
 class Hotel(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
     hotel_name = models.CharField(max_length=100)
-    property_type = models.CharField(max_length=50)
-    star_rating = models.IntegerField()
-    description = models.TextField()
+    location = models.CharField(max_length=100,null=True, blank=True)
 
-    country = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
-    address = models.TextField()
-    pincode = models.CharField(max_length=10)
+    id_proof1 = models.FileField(upload_to="hotel_docs/",null=True, blank=True)
+    id_proof2 = models.FileField(upload_to="hotel_docs/",null=True, blank=True)
 
-    is_approved = models.BooleanField(default=False)
-    is_blocked = models.BooleanField(default=False)
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("blocked", "Blocked"),
+    )
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
     def __str__(self):
         return self.hotel_name
