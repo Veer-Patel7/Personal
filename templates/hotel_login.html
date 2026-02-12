@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hotel-admin Login</title>
+</head>
+<body>
+
+<!-- MESSAGE BLOCK -->
+{% if messages %}
+    {% for message in messages %}
+        <p style="color:green"><strong>{{ message }}</strong></p>
+    {% endfor %}
+{% endif %}
+
+
+<h3>Hotel Admin Login</h3>
+
+<form method="post">
+    {% csrf_token %}
+    Email:<br>
+    <input type="email" name="email"><br><br>
+
+    Password:<br>
+    <input type="password" name="password"><br><br>
+
+    <button type="submit">Login</button>
+</form>
+
+{{ error }}
+
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Signup</title>
+</head>
+<body>
+
+<!-- MESSAGE BLOCK -->
+{% if messages %}
+    {% for message in messages %}
+        <p style="color:green"><strong>{{ message }}</strong></p>
+    {% endfor %}
+{% endif %}
+
+<h3>Customer Signup</h3>
+
+<form method="post">
+{% csrf_token %}
+
+<label>First Name</label><br>
+<input type="text" name="first_name" required><br><br>
+
+<label>Last Name</label><br>
+<input type="text" name="last_name" required><br><br>
+
+<label>Email</label><br>
+<input type="email" name="email" required><br><br>
+
+<label>Password</label><br>
+<input type="password" name="password" required><br><br>
+
+<label>Confirm Password</label><br>
+<input type="password" name="confirm_password" required><br><br>
+
+<button type="submit">Create Account</button>
+
+</form>
+
+</body>
+</html>

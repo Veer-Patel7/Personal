@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hotel Owners Manage</title>
+</head>
+<body>
+
+<h2>Hotel Owners Manage</h2>
+<hr>
+
+<table border="1" cellpadding="10">
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+{% for o in owners %}
+<tr>
+    <td>{{ o.first_name }} {{ o.last_name }}</td>
+    <td>{{ o.email }}</td>
+
+    <td>
+        {% if o.is_active %}
+            Active
+        {% else %}
+            Pending
+        {% endif %}
+    </td>
+
+    <td>
+        {% if not o.is_active %}
+            <a href="/super/approve-owner/{{ o.id }}/">Approve</a>
+        {% else %}
+            <a href="/super/disable-owner/{{ o.id }}/">Disable</a>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+<br><br>
+<a href="/super/dashboard/">Back to Dashboard</a>
+
+</body>
+</html>
