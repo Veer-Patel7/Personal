@@ -3,7 +3,7 @@ from accounts.models import User
 
 
 class Hotel(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
 
     hotel_name = models.CharField(max_length=100)
     location = models.CharField(max_length=100,null=True, blank=True)
@@ -15,10 +15,13 @@ class Hotel(models.Model):
         ("pending", "Pending"),
         ("approved", "Approved"),
         ("blocked", "Blocked"),
+        ("rejected", "Rejected"),
     )
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
+    reject_reason = models.TextField(null=True, blank=True)
+    
     def __str__(self):
         return self.hotel_name
 

@@ -38,15 +38,19 @@
     <td>
         {% if h.status == "pending" %}
             <a href="/super/approve-hotel/{{ h.id }}/">Approve</a> |
-            <a href="/super/block-hotel/{{ h.id }}/">Reject</a>
+            <a href="/super/reject-hotel/{{ h.id }}/">Reject</a>
 
         {% elif h.status == "approved" %}
             <a href="/super/block-hotel/{{ h.id }}/">Block</a>
 
         {% elif h.status == "blocked" %}
             <a href="/super/approve-hotel/{{ h.id }}/">Unblock</a>
-        {% endif %}
+
+        {% elif h.status == "rejected" %}
+            Rejected
+    {% endif %}
     </td>
+
 </tr>
 {% endfor %}
 </table>

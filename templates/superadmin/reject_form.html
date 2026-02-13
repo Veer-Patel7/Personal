@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reject Hotel</title>
+</head>
+<body>
+
+<h2>Reject Hotel</h2>
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+
+    <p><b>Hotel:</b> {{ hotel.hotel_name }}</p>
+
+    <label>Reason for rejection:</label><br>
+    <textarea name="reason" rows="4" cols="40" required></textarea>
+
+    <br><br>
+    <button type="submit">Reject Hotel</button>
+</form>
+
+<br>
+<a href="/super/approve-hotels/">⬅ Back</a>
+
+</body>
+</html>

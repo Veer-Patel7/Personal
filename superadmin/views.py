@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from hotels.models import Hotel
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 User = get_user_model()
 
@@ -21,7 +24,7 @@ def owners(request):
         return HttpResponse("Unauthorized")
 
     owners = User.objects.filter(role="hotel_admin")
-    return render(request, "superadmin/owners.html", {"owners": owners})
+    return render(request, "    /owners.html", {"owners": owners})
 
 
 #  APPROVE OWNER (pending → active)
@@ -77,3 +80,31 @@ def block_hotel(request, hotel_id):
     h.save()
     return redirect("/super/hotels/")
 
+#------reject hotel with reason mail--------
+@login_required(login_url="/super/")
+def reject_hotel(request, hotel_id):
+
+    if request.user.role != "super_admin":
+        return HttpResponse("Unauthorized")
+
+    hotel = Hotel.objects.get(id=hotel_id)
+
+    if request.method == "POST":
+        reason = request.POST.get("reason")
+
+        hotel.status = "rejected"
+        hotel.reject_reason = reason
+        hotel.save()
+
+        # 📧 EMAIL OWNER
+        send_mail(
+            "Hotel Rejected",
+            f"Your hotel '{hotel.hotel_name}' was rejected.\nReason: {reason}",
+            settings.EMAIL_HOST_USER,
+            [hotel.owner.email],
+            fail_silently=False,
+        )
+
+        return redirect("/super/hotels/")
+
+    return render(request, "superadmin/reject_form.html", {"hotel": hotel})

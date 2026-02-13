@@ -14,6 +14,8 @@ urlpatterns = [
     path('hotels/', views.hotels_approve),
     path('approve-hotel/<int:hotel_id>/', views.approve_hotel),
     path('block-hotel/<int:hotel_id>/', views.block_hotel),
+    path('reject-hotel/<int:hotel_id>/', views.reject_hotel),
+
 
 
 
