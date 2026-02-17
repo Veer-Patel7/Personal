@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from hotels.models import Hotel
 from django.core.mail import send_mail
 from django.conf import settings
+from bookings.models import Booking
+
 
 
 User = get_user_model()
@@ -24,7 +26,7 @@ def owners(request):
         return HttpResponse("Unauthorized")
 
     owners = User.objects.filter(role="hotel_admin")
-    return render(request, "    /owners.html", {"owners": owners})
+    return render(request, "superadmin/owners.html", {"owners": owners})
 
 
 #  APPROVE OWNER (pending → active)
@@ -108,3 +110,71 @@ def reject_hotel(request, hotel_id):
         return redirect("/super/hotels/")
 
     return render(request, "superadmin/reject_form.html", {"hotel": hotel})
+
+
+#--------Booking manage---------
+
+@login_required(login_url="/super/")
+def bookings_manage(request):
+
+    if request.user.role != "super_admin":
+        return HttpResponse("Unauthorized")
+
+    bookings = Booking.objects.all().order_by("-id")
+
+    return render(request, "superadmin/bookings.html", {"bookings": bookings})
+
+@login_required(login_url="/super/")
+def update_booking(request, booking_id):
+    if request.user.role != "super_admin":
+        return HttpResponse("Unauthorized")
+
+    b = Booking.objects.get(id=booking_id)
+
+    if request.method == "POST":
+
+        # SAFE DATE UPDATE
+        checkin = request.POST.get("checkin_date")
+        checkout = request.POST.get("checkout_date")
+
+        if checkin:
+            b.checkin_date = checkin
+
+        if checkout:
+            b.checkout_date = checkout
+
+        # 🔴 FORCE CANCEL
+        if request.POST.get("force_cancel"):
+            reason = request.POST.get("reason")
+
+            b.booking_status = "cancelled"
+            b.cancel_reason = reason
+            b.save()
+
+            # EMAIL → customer
+            send_mail(
+                "Booking Cancelled",
+                f"Your booking #{b.id} was cancelled.\nReason: {reason}",
+                settings.EMAIL_HOST_USER,
+                [b.user.email],
+                fail_silently=True,
+            )
+
+            # EMAIL → hotel owner
+            send_mail(
+                "Booking Cancelled by Super Admin",
+                f"Booking #{b.id} cancelled.\nReason: {reason}",
+                settings.EMAIL_HOST_USER,
+                [b.hotel.owner.email],
+                fail_silently=True,
+            )
+
+            return redirect("/super/bookings/")
+
+        # 🟢 NORMAL STATUS UPDATE
+        status = request.POST.get("status")
+        if status:
+            b.booking_status = status
+
+        b.save()
+        return redirect("/super/bookings/")

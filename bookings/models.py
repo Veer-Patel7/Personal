@@ -13,6 +13,8 @@ class Booking(models.Model):
     aadhaar_id = models.CharField(max_length=20)
     payment_method = models.CharField(max_length=20, default="cash")
     booking_status = models.CharField(max_length=20, default="pending")
+    
+    cancel_reason = models.TextField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
