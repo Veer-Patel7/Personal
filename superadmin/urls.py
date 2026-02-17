@@ -20,7 +20,11 @@ urlpatterns = [
     path("bookings/", views.bookings_manage),
     path("update-booking/<int:booking_id>/", views.update_booking),
 
-
-
+    # PAYMENTS MAIN PAGE
+    path('payments/', views.payments_dashboard),
+    # COMMISSION
+    path('payments/generate/', views.generate_commission),
+    path('payments/invoices/', views.commissions),
+    path('payments/mark-paid/<int:id>/', views.mark_paid),
 
 ]

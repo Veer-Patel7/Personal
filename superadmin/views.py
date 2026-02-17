@@ -6,6 +6,9 @@ from hotels.models import Hotel
 from django.core.mail import send_mail
 from django.conf import settings
 from bookings.models import Booking
+from payments.models import HotelCommission
+from datetime import date, timedelta
+
 
 
 
@@ -98,7 +101,7 @@ def reject_hotel(request, hotel_id):
         hotel.reject_reason = reason
         hotel.save()
 
-        # 📧 EMAIL OWNER
+        # EMAIL OWNER
         send_mail(
             "Hotel Rejected",
             f"Your hotel '{hotel.hotel_name}' was rejected.\nReason: {reason}",
@@ -143,7 +146,7 @@ def update_booking(request, booking_id):
         if checkout:
             b.checkout_date = checkout
 
-        # 🔴 FORCE CANCEL
+        # FORCE CANCEL
         if request.POST.get("force_cancel"):
             reason = request.POST.get("reason")
 
@@ -171,10 +174,126 @@ def update_booking(request, booking_id):
 
             return redirect("/super/bookings/")
 
-        # 🟢 NORMAL STATUS UPDATE
+        # NORMAL STATUS UPDATE
         status = request.POST.get("status")
         if status:
             b.booking_status = status
 
         b.save()
         return redirect("/super/bookings/")
+
+# ================= PAYMENTS DASHBOARD =================
+@login_required(login_url="/super/")
+def payments_dashboard(request):
+    return render(request, "superadmin/payments_dashboard.html")
+
+
+# ================= GENERATE COMMISSION =================
+@login_required(login_url="/super/")
+def generate_commission(request):
+
+    # month select from form
+    month = request.GET.get("month")
+
+    if month:
+        year, m = month.split("-")
+        month = int(m)
+        year = int(year)
+    else:
+        today = date.today()
+        month = today.month
+        year = today.year
+
+    hotels = Hotel.objects.filter(status="approved")
+
+    for h in hotels:
+
+        bookings = Booking.objects.filter(
+            hotel=h,
+            booking_status="confirmed",
+            checkin_date__month=month,
+            checkin_date__year=year
+        )
+
+        total_revenue = sum([b.room.price_per_night for b in bookings])
+        total_bookings = bookings.count()
+
+        commission_percent = 10
+        commission_amount = total_revenue * commission_percent / 100
+
+        due_date = date.today() + timedelta(days=5)
+
+        HotelCommission.objects.update_or_create(
+            hotel=h,
+            month=month,
+            year=year,
+            defaults={
+                "total_bookings": total_bookings,
+                "total_revenue": total_revenue,
+                "commission_amount": commission_amount,
+                "due_date": due_date,
+                "status": "pending"
+            }
+        )
+
+    return redirect("/super/payments/invoices/")
+
+
+# ================= VIEW INVOICES =================
+@login_required(login_url="/super/")
+def commissions(request):
+
+    invoices = HotelCommission.objects.all().order_by("-id")
+
+    today = date.today()
+
+    for i in invoices:
+
+        # overdue check
+        if i.status == "pending" and today > i.due_date:
+            i.status = "overdue"
+            i.penalty = i.commission_amount * 0.05
+            i.save()
+
+        # auto block after 5 days overdue
+        if i.status == "overdue":
+            if today > i.due_date + timedelta(days=5):
+                i.hotel.status = "blocked"
+                i.hotel.save()
+
+    return render(request, "superadmin/commissions.html", {"data": invoices})
+
+
+# ================= MARK PAID =================
+@login_required(login_url="/super/")
+def mark_paid(request, id):
+
+    p = HotelCommission.objects.get(id=id)
+    p.status = "paid"
+    p.penalty = 0
+    p.save()
+
+    return redirect("/super/payments/invoices/")
+
+
+# ================= SEND PAYMENT REMINDER =================
+@login_required(login_url="/super/")
+def send_payment_mail(request, id):
+
+    p = HotelCommission.objects.get(id=id)
+
+    send_mail(
+        "Commission Payment Due",
+        f"""
+        Hotel: {p.hotel.hotel_name}
+        Amount: ₹{p.commission_amount}
+        Due date: {p.due_date}
+
+        Please pay within 5 days.
+        """,
+        settings.EMAIL_HOST_USER,
+        [p.hotel.owner.email],
+        fail_silently=True,
+    )
+
+    return redirect("/super/payments/invoices/")

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monthly Commission</title>
+</head>
+<body>
+
+<h2>Monthly Commission</h2>
+<hr>
+
+<form method="get"action="/super/payments/generate/">
+    Select Month:
+    <input type="month" name="month" required>
+    <button type="submit">Generate</button>
+</form>
+
+
+<br><br>
+
+<table border="1" cellpadding="10">
+<tr>
+    <th>Hotel</th>
+    <th>Month</th>
+    <th>Total Revenue</th>
+    <th>Commission</th>
+    <th>Penalty</th>
+    <th>Total Pay</th>
+    <th>Status</th>
+    <th>Due Date</th>
+    <th>Action</th>
+</tr>
+
+{% for p in data %}
+<tr>
+
+    <td>{{ p.hotel.hotel_name }}</td>
+    <td>{{ p.month }}/{{ p.year }}</td>
+    <td>{{ p.total_revenue }}</td>
+    <td>{{ p.commission_amount }}</td>
+    <td>{{ p.penalty_amount }}</td>
+    <td>{{ p.total_payable }}</td>
+    <td>{{ p.status }}</td>
+    <td>{{ p.due_date }}</td>
+
+    <td>
+        {% if p.status != "paid" %}
+            <a href="/super/payments/mark-paid/{{ p.id }}/">Mark Paid</a>
+        {% else %}
+            Paid
+        {% endif %}
+    </td>
+
+</tr>
+{% empty %}
+<tr>
+    <td colspan="9">No commission data</td>
+</tr>
+{% endfor %}
+</table>
+
+<br><br>
+<a href="/super/dashboard/">⬅ Back to Dashboard</a>
+
+</body>
+</html>
