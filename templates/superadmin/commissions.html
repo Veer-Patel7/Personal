@@ -1,65 +1,80 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Monthly Commission</title>
-</head>
-<body>
+{% extends "superadmin/base.html" %}
+
+{% block content %}
 
 <h2>Monthly Commission</h2>
 <hr>
 
-<form method="get"action="/super/payments/generate/">
-    Select Month:
-    <input type="month" name="month" required>
-    <button type="submit">Generate</button>
-</form>
+<div class="card">
+  <div class="card-body">
 
+    <form method="get" action="/super/payments/generate/">
+      <div class="form-group">
+        <label>Select Month</label>
+        <input type="month" name="month" class="form-control" required>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary">Generate</button>
+    </form>
 
-<br><br>
+  </div>
+</div>
 
-<table border="1" cellpadding="10">
-<tr>
-    <th>Hotel</th>
-    <th>Month</th>
-    <th>Total Revenue</th>
-    <th>Commission</th>
-    <th>Penalty</th>
-    <th>Total Pay</th>
-    <th>Status</th>
-    <th>Due Date</th>
-    <th>Action</th>
-</tr>
+<br>
 
-{% for p in data %}
-<tr>
+<div class="card">
+  <div class="card-body">
 
-    <td>{{ p.hotel.hotel_name }}</td>
-    <td>{{ p.month }}/{{ p.year }}</td>
-    <td>{{ p.total_revenue }}</td>
-    <td>{{ p.commission_amount }}</td>
-    <td>{{ p.penalty_amount }}</td>
-    <td>{{ p.total_payable }}</td>
-    <td>{{ p.status }}</td>
-    <td>{{ p.due_date }}</td>
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th>Hotel</th>
+        <th>Month</th>
+        <th>Total Revenue</th>
+        <th>Commission</th>
+        <th>Penalty</th>
+        <th>Total Pay</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Action</th>
+      </tr>
 
-    <td>
-        {% if p.status != "paid" %}
-            <a href="/super/payments/mark-paid/{{ p.id }}/">Mark Paid</a>
-        {% else %}
+      {% for p in data %}
+      <tr>
+        <td>{{ p.hotel.hotel_name }}</td>
+        <td>{{ p.month }}/{{ p.year }}</td>
+        <td>{{ p.total_revenue }}</td>
+        <td>{{ p.commission_amount }}</td>
+        <td>{{ p.penalty_amount }}</td>
+        <td>{{ p.total_payable }}</td>
+
+        <td>
+          {% if p.status == "paid" %}
+            <span class="badge bg-success">Paid</span>
+          {% else %}
+            <span class="badge bg-warning">Pending</span>
+          {% endif %}
+        </td>
+
+        <td>{{ p.due_date }}</td>
+
+        <td>
+          {% if p.status != "paid" %}
+            <a href="/super/payments/mark-paid/{{ p.id }}/" class="btn btn-success btn-sm">Mark Paid</a>
+          {% else %}
             Paid
-        {% endif %}
-    </td>
+          {% endif %}
+        </td>
+      </tr>
 
-</tr>
-{% empty %}
-<tr>
-    <td colspan="9">No commission data</td>
-</tr>
-{% endfor %}
-</table>
+      {% empty %}
+      <tr>
+        <td colspan="9" class="text-center">No commission data</td>
+      </tr>
+      {% endfor %}
 
-<br><br>
-<a href="/super/dashboard/">⬅ Back to Dashboard</a>
+    </table>
 
-</body>
-</html>
+  </div>
+</div>
+
+{% endblock %}

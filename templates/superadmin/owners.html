@@ -1,48 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hotel Owners Manage</title>
-</head>
-<body>
+{% extends "superadmin/base.html" %}
+
+{% block content %}
 
 <h2>Hotel Owners Manage</h2>
 <hr>
 
-<table border="1" cellpadding="10">
-<tr>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Status</th>
-    <th>Action</th>
-</tr>
+<div class="card">
+  <div class="card-body">
 
-{% for o in owners %}
-<tr>
-    <td>{{ o.first_name }} {{ o.last_name }}</td>
-    <td>{{ o.email }}</td>
+    <table class="table table-bordered">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
 
-    <td>
-        {% if o.is_active %}
-            Active
-        {% else %}
-            Pending
-        {% endif %}
-    </td>
+      {% for o in owners %}
+      <tr>
+        <td>{{ o.first_name }} {{ o.last_name }}</td>
+        <td>{{ o.email }}</td>
 
-    <td>
-        {% if not o.is_active %}
-            <a href="/super/approve-owner/{{ o.id }}/">Approve</a>
-        {% else %}
-            <a href="/super/disable-owner/{{ o.id }}/">Disable</a>
-        {% endif %}
-    </td>
-</tr>
-{% endfor %}
+        <td>
+          {% if o.is_active %}
+            <span class="badge bg-success">Active</span>
+          {% else %}
+            <span class="badge bg-warning">Pending</span>
+          {% endif %}
+        </td>
 
-</table>
+        <td>
+          {% if not o.is_active %}
+            <a href="/super/approve-owner/{{ o.id }}/" class="btn btn-success btn-sm">Approve</a>
+          {% else %}
+            <a href="/super/disable-owner/{{ o.id }}/" class="btn btn-danger btn-sm">Disable</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
 
-<br><br>
-<a href="/super/dashboard/">Back to Dashboard</a>
+    </table>
 
-</body>
-</html>
+  </div>
+</div>
+
+{% endblock %}

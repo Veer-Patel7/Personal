@@ -26,5 +26,11 @@ urlpatterns = [
     path('payments/generate/', views.generate_commission),
     path('payments/invoices/', views.commissions),
     path('payments/mark-paid/<int:id>/', views.mark_paid),
+    
+    # CUSTOMER MANAGE
+    path("customers/", views.customers_manage),
+    path("blacklist/<int:user_id>/", views.blacklist_customer),
+    path("unblock/<int:user_id>/", views.unblock_customer),
+
 
 ]

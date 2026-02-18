@@ -2,12 +2,13 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from hotels.models import Hotel
 from django.core.mail import send_mail
-from django.conf import settings
+from hotels.models import Hotel
+from accounts.models import User
 from bookings.models import Booking
 from payments.models import HotelCommission
 from datetime import date, timedelta
+from django.conf import settings
 
 
 
@@ -297,3 +298,45 @@ def send_payment_mail(request, id):
     )
 
     return redirect("/super/payments/invoices/")
+
+#--------CUSTOMER MANAGE---------
+
+@login_required(login_url="/super/")
+def customers_manage(request):
+
+    if request.user.role != "super_admin":
+        return HttpResponse("Unauthorized")
+
+    customers = User.objects.filter(role="customer")
+
+    data = []
+
+    for c in customers:
+        total = Booking.objects.filter(user=c).count()
+        data.append({
+            "obj": c,
+            "total": total
+        })
+
+    return render(request, "superadmin/customers.html", {"data": data})
+
+#Blacklist customer
+@login_required(login_url="/super/")
+def blacklist_customer(request, user_id):
+
+    c = User.objects.get(id=user_id)
+    c.is_active = False
+    c.save()
+
+    return redirect("/super/customers/")
+
+#Unblock customer
+@login_required(login_url="/super/")
+def unblock_customer(request, user_id):
+
+    c = User.objects.get(id=user_id)
+    c.is_active = True
+    c.save()
+
+    return redirect("/super/customers/")
+
