@@ -31,6 +31,11 @@ def hotel_dashboard(request):
 
 @login_required(login_url="/hotel/login/")
 def register_hotel(request):
+    
+    user = request.user
+    
+    if Hotel.objects.filter(owner=user).exists():
+        return redirect('hotels:hotel_dashboard')
 
     if request.method == "POST":
         name = request.POST.get("hotel_name")

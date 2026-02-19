@@ -36,7 +36,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_verified = models.BooleanField(default=False)
 
-    # 🔥 OTP field (NEW)
+    # OTP field
     otp = models.CharField(max_length=6, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
