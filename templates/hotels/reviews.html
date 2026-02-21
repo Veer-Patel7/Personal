@@ -1,0 +1,68 @@
+{% extends "hotels/hotel_base.html" %}
+{% block content %}
+
+<h2>Hotel Reviews</h2>
+<hr>
+
+<div class="card">
+  <div class="card-body">
+
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th>Customer</th>
+        <th>Rating</th>
+        <th>Comment</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+
+      {% for r in reviews %}
+      <tr>
+        <td>{{ r.user.email }}</td>
+
+        <td>
+          <span class="badge bg-info">{{ r.rating }}</span>
+        </td>
+
+        <td>{{ r.comment }}</td>
+
+        <td>
+          {% if r.status == "active" %}
+            <span class="badge bg-success">Active</span>
+
+          {% elif r.status == "delete_request" %}
+            <span class="badge bg-warning">Delete Request</span>
+
+          {% elif r.status == "deleted" %}
+            <span class="badge bg-danger">Deleted</span>
+          {% endif %}
+        </td>
+
+        <td>
+          {% if r.status == "active" %}
+            <a href="/hotel/request-delete/{{ r.id }}/"
+               class="btn btn-danger btn-sm">
+               Request Delete
+            </a>
+
+          {% elif r.status == "delete_request" %}
+            <span class="text-warning">Pending Approval</span>
+
+          {% elif r.status == "deleted" %}
+            <span class="text-muted">Deleted</span>
+          {% endif %}
+        </td>
+      </tr>
+
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center">No reviews yet</td>
+      </tr>
+      {% endfor %}
+
+    </table>
+
+  </div>
+</div>
+
+{% endblock %}

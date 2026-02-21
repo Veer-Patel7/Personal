@@ -71,6 +71,8 @@ def hotel_login(request):
 
         if hotel:
             return redirect('hotels:hotel_dashboard', hotel_id=hotel.id)
+        else:
+            return redirect('/hotel/register/')
 
 
     return render(request, "hotel_login.html")

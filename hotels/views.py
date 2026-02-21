@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Hotel
+from reviews.models import Review
+
 
 @login_required(login_url="/hotel/login/")
 def hotel_dashboard(request, hotel_id):
@@ -61,9 +63,17 @@ def register_hotel(request):
 #----------review-------------
 
 @login_required(login_url="/hotel/login/")
-def request_delete_review(request, review_id):
+def hotel_reviews(request):
 
-    r = Review.objects.get(id=review_id)
+    reviews = Review.objects.filter(hotel__owner=request.user)
+
+    return render(request, "hotels/reviews.html", {"reviews": reviews})
+
+
+@login_required(login_url="/hotel/login/")
+def request_delete_review(request, id):
+
+    r = Review.objects.get(id=id)
 
     if r.hotel.owner != request.user:
         return HttpResponse("Unauthorized")
@@ -71,4 +81,4 @@ def request_delete_review(request, review_id):
     r.status = "delete_request"
     r.save()
 
-    return redirect("/hotel/dashboard/")
+    return redirect("/hotel/reviews/")

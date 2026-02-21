@@ -10,6 +10,8 @@ from payments.models import HotelCommission
 from datetime import date, timedelta
 from django.conf import settings
 
+from reviews.models import Review
+
 
 
 
@@ -299,7 +301,7 @@ def send_payment_mail(request, id):
 
     return redirect("/super/payments/invoices/")
 
-#--------CUSTOMER MANAGE---------
+#===========CUSTOMER MANAGe==============
 
 @login_required(login_url="/super/")
 def customers_manage(request):
@@ -340,3 +342,40 @@ def unblock_customer(request, user_id):
 
     return redirect("/super/customers/")
 
+#============ Review Moderate ==============
+
+@login_required(login_url="/super/")
+def reviews_moderate(request):
+
+    reviews = Review.objects.filter(status="delete_request")
+
+    return render(request, "superadmin/reviews.html", {"reviews": reviews})
+
+@login_required(login_url="/super/")
+def approve_delete_review(request, id):
+
+    r = Review.objects.get(id=id)
+    r.status = "deleted"
+    r.save()
+
+    return redirect("/super/reviews/")
+
+
+@login_required(login_url="/super/")
+def reject_delete_review(request, id):
+
+    r = Review.objects.get(id=id)
+    r.status = "active"
+    r.save()
+
+    return redirect("/super/reviews/")
+
+
+@login_required(login_url="/super/")
+def mark_fake_review(request, id):
+
+    r = Review.objects.get(id=id)
+    r.status = "fake"
+    r.save()
+
+    return redirect("/super/reviews/")

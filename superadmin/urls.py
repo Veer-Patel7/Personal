@@ -32,5 +32,11 @@ urlpatterns = [
     path("blacklist/<int:user_id>/", views.blacklist_customer),
     path("unblock/<int:user_id>/", views.unblock_customer),
 
-
+    # REVIEW  MODERATE
+    path("reviews/", views.reviews_moderate),
+    path("approve-review/<int:id>/", views.approve_delete_review),
+    path("reject-review/<int:id>/", views.reject_delete_review),
+    path("fake-review/<int:id>/", views.mark_fake_review),
+    
+    
 ]
