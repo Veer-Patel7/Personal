@@ -1,10 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Hotel
 
 @login_required(login_url="/hotel/login/")
-def hotel_dashboard(request):
+def hotel_dashboard(request, hotel_id):
+
 
     # approved hotel check
     approved_hotel = Hotel.objects.filter(owner=request.user, status="approved").first()
@@ -31,11 +32,13 @@ def hotel_dashboard(request):
 
 @login_required(login_url="/hotel/login/")
 def register_hotel(request):
-    
+
     user = request.user
-    
-    if Hotel.objects.filter(owner=user).exists():
-        return redirect('hotels:hotel_dashboard')
+
+    # check if already has hotel
+    hotel = Hotel.objects.filter(owner=user).first()
+    if hotel:
+        return redirect('hotels:hotel_dashboard', hotel_id=hotel.id)
 
     if request.method == "POST":
         name = request.POST.get("hotel_name")
@@ -43,14 +46,29 @@ def register_hotel(request):
         id1 = request.FILES.get("id1")
         id2 = request.FILES.get("id2")
 
-        Hotel.objects.create(
-            owner=request.user,
+        hotel = Hotel.objects.create(
+            owner=user,
             hotel_name=name,
             location=location,
             id_proof1=id1,
             id_proof2=id2
         )
 
-        return render(request, "hotels/waiting.html")
+        return redirect('hotels:hotel_dashboard', hotel_id=hotel.id)
 
     return render(request, "hotels/register_hotel.html")
+
+#----------review-------------
+
+@login_required(login_url="/hotel/login/")
+def request_delete_review(request, review_id):
+
+    r = Review.objects.get(id=review_id)
+
+    if r.hotel.owner != request.user:
+        return HttpResponse("Unauthorized")
+
+    r.status = "delete_request"
+    r.save()
+
+    return redirect("/hotel/dashboard/")

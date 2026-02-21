@@ -1,0 +1,19 @@
+<h2>Add Review</h2>
+
+<form method="post">
+{% csrf_token %}
+
+Rating:
+<input type="number" name="rating" min="1" max="5"><br><br>
+
+Comment:
+<textarea name="comment"></textarea><br><br>
+
+Recommend:
+<select name="recommend">
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+</select><br><br>
+
+<button type="submit">Submit Review</button>
+</form>

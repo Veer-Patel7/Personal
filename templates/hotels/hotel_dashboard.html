@@ -1,31 +1,106 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hotel Admin Dashboard</title>
-</head>
-<body>
+{% extends "hotels/hotel_base.html" %}
 
-<h2> Hotel Admin Dashboard</h2>
-<hr>
+{% block content %}
 
-<h3>Hotel Setup</h3>
-<ul>
-    <li>
-        <a href="/hotel/register/">Register Hotel</a>
-    </li>
-</ul>
+<div class="container-fluid">
 
-<hr>
+<!-- Page Header -->
+<div class="row mb-3">
+  <div class="col-sm-6">
+    <h3>Hotel Admin Dashboard</h3>
+  </div>
+</div>
 
-<h3>Management</h3>
-<ul>
-    <li><a href="#">Manage Rooms</a></li>
-    <li><a href="#">Manage Bookings</a></li>
-</ul>
+<!-- HOTEL SETUP -->
+<div class="card card-primary">
+  <div class="card-header">
+    <h5 class="card-title">Hotel Setup</h5>
+  </div>
 
-<hr>
+  <div class="card-body">
 
-<a href="/logout/">Logout</a>
+    {% if hotel %}
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        You have already registered your hotel.
+      </div>
+    {% else %}
+      <a href="{% url 'hotels:register_hotel' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Register Hotel
+      </a>
+    {% endif %}
 
-</body>
-</html>
+  </div>
+</div>
+
+<!-- MANAGEMENT -->
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title">Management</h5>
+  </div>
+
+  <div class="card-body">
+
+    <a href="#" class="btn btn-info mr-2">
+      <i class="fas fa-bed"></i> Manage Rooms
+    </a>
+
+    <a href="#" class="btn btn-warning">
+      <i class="fas fa-calendar"></i> Manage Bookings
+    </a>
+
+  </div>
+</div>
+
+<!-- HOTEL DETAILS -->
+{% if hotel %}
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title">Your Hotel Details</h5>
+  </div>
+
+  <div class="card-body">
+
+    <div class="row">
+
+      <!-- LEFT INFO -->
+      <div class="col-md-6">
+        <p><strong>Hotel Name:</strong> {{ hotel.hotel_name }}</p>
+        <p><strong>Location:</strong> {{ hotel.location }}</p>
+      </div>
+
+      <!-- RIGHT IMAGES -->
+      <div class="col-md-6 d-flex" style="gap:20px;">
+
+        {% if hotel.id_proof1 %}
+        <div>
+          <p><strong>ID Proof 1</strong></p>
+          <img src="{{ hotel.id_proof1.url }}" width="120" class="img-thumbnail">
+        </div>
+        {% endif %}
+
+        {% if hotel.id_proof2 %}
+        <div>
+          <p><strong>ID Proof 2</strong></p>
+          <img src="{{ hotel.id_proof2.url }}" width="120" class="img-thumbnail">
+        </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endif %}
+
+<!-- Logout -->
+<div class="mt-3">
+  <a href="/logout/" class="btn btn-danger">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </a>
+</div>
+
+</div>
+
+{% endblock %}

@@ -7,6 +7,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from .utils import generate_otp
 from django.contrib.auth.decorators import login_required
+from hotels.models import Hotel
+
 
 User = get_user_model()
 
@@ -65,7 +67,11 @@ def hotel_login(request):
 
         login(request, user)
         messages.success(request, "Hotel admin login successful")
-        return redirect("hotel_dashboard")
+        hotel = Hotel.objects.filter(owner=user).first()
+
+        if hotel:
+            return redirect('hotels:hotel_dashboard', hotel_id=hotel.id)
+
 
     return render(request, "hotel_login.html")
 
@@ -94,7 +100,7 @@ def super_login(request):
 
 
 # =====================================================
-# 🔐 CUSTOMER SIGNUP WITH OTP
+# CUSTOMER SIGNUP WITH OTP
 # =====================================================
 def customer_signup(request):
 
@@ -126,7 +132,7 @@ def customer_signup(request):
 
 
 # =====================================================
-# 🔐 HOTEL ADMIN SIGNUP WITH OTP
+# HOTEL ADMIN SIGNUP WITH OTP
 # =====================================================
 def hotel_signup(request):
 
@@ -171,7 +177,7 @@ def hotel_signup(request):
 
 
 # =====================================================
-# 🔐 VERIFY OTP
+# VERIFY OTP
 # =====================================================
 def verify(request):
 
