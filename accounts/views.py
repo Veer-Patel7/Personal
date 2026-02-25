@@ -13,7 +13,7 @@ from hotels.models import Hotel
 User = get_user_model()
 
 
-# ================= CUSTOMER LOGIN =================
+# ========================== CUSTOMER LOGIN ==========================
 def customer_login(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -45,7 +45,7 @@ def customer_login(request):
     return render(request, "customer_login.html")
 
 
-# ================= HOTEL LOGIN =================
+# ========================== HOTEL LOGIN ==========================
 def hotel_login(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -78,7 +78,7 @@ def hotel_login(request):
     return render(request, "hotel_login.html")
 
 
-# ================= SUPER ADMIN LOGIN =================
+# ========================== SUPER ADMIN LOGIN ==========================
 def super_login(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -101,9 +101,8 @@ def super_login(request):
     return render(request, "super_login.html")
 
 
-# =====================================================
-# CUSTOMER SIGNUP WITH OTP
-# =====================================================
+# ========================== CUSTOMER SIGNUP WITH OTP ==========================
+
 def customer_signup(request):
 
     if request.method == "POST":
@@ -133,9 +132,7 @@ def customer_signup(request):
     return render(request, "customer_signup.html")
 
 
-# =====================================================
-# HOTEL ADMIN SIGNUP WITH OTP
-# =====================================================
+# ========================== HOTEL ADMIN SIGNUP WITH OTP ==========================
 def hotel_signup(request):
 
     if request.method == "POST":
@@ -178,9 +175,7 @@ def hotel_signup(request):
     return render(request, "hotel_signup.html")
 
 
-# =====================================================
-# VERIFY OTP
-# =====================================================
+# ========================== VERIFY OTP ==========================
 def verify(request):
 
     email = request.GET.get("email")
@@ -212,7 +207,7 @@ def verify(request):
     return render(request, "verify.html", {"email": email})
 
 
-# ================= LOGOUT =================
+# ========================== LOGOUT ==========================
 def user_logout(request):
     logout(request)
     return redirect("/")

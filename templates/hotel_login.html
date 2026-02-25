@@ -24,6 +24,11 @@
     <input type="password" name="password"><br><br>
 
     <button type="submit">Login</button>
+
+    <a href="{% url 'accounts:hotel_signup' %}">
+        <button type="button">signup</button>
+    </a>
+    
 </form>
 
 {{ error }}

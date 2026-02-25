@@ -1,71 +1,127 @@
 {% extends "superadmin/base.html" %}
-
 {% block content %}
 
-<h2>Hotel Approval Panel</h2>
-<hr>
+<style>
+.card-box{
+    padding:20px;
+    border-radius:10px;
+    color:white;
+}
+.bg1{background:#3498db;}
+.bg2{background:#27ae60;}
+.bg3{background:#e74c3c;}
 
-<div class="card">
-  <div class="card-body">
+.table-box{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-top:25px;
+}
+</style>
 
-    <table class="table table-bordered table-striped">
-      <tr>
-        <th>Hotel Name</th>
-        <th>Owner</th>
-        <th>City</th>
-        <th>Status</th>
-        <th>ID Proof 1</th>
-        <th>ID Proof 2</th>
-        <th>Action</th>
-      </tr>
+<div class="container-fluid">
 
-      {% for h in hotels %}
-      <tr>
-        <td>{{ h.hotel_name }}</td>
-        <td>{{ h.owner.email }}</td>
-        <td>{{ h.location }}</td>
+<h2 class="mb-4">Super Admin Dashboard</h2>
 
-        <td>
-          {% if h.status == "pending" %}
-            <span class="badge bg-warning">Pending</span>
-          {% elif h.status == "approved" %}
-            <span class="badge bg-success">Approved</span>
-          {% elif h.status == "blocked" %}
-            <span class="badge bg-danger">Blocked</span>
-          {% elif h.status == "rejected" %}
-            <span class="badge bg-secondary">Rejected</span>
-          {% endif %}
-        </td>
+<!-- STATS CARDS -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="card-box bg1">
+            <h4>Pending Hotels</h4>
+            <h2>{{ pending_count }}</h2>
+        </div>
+    </div>
 
-        <td>
-          <a href="{{ h.id_proof1.url }}" target="_blank" class="btn btn-info btn-sm">View</a>
-        </td>
+    <div class="col-md-4">
+        <div class="card-box bg2">
+            <h4>Live Hotels</h4>
+            <h2>{{ live_count }}</h2>
+        </div>
+    </div>
 
-        <td>
-          <a href="{{ h.id_proof2.url }}" target="_blank" class="btn btn-info btn-sm">View</a>
-        </td>
+    <div class="col-md-4">
+        <div class="card-box bg3">
+            <h4>Rejected</h4>
+            <h2>{{ rejected_count }}</h2>
+        </div>
+    </div>
+</div>
 
-        <td>
-          {% if h.status == "pending" %}
-            <a href="/super/approve-hotel/{{ h.id }}/" class="btn btn-success btn-sm">Approve</a>
-            <a href="/super/reject-hotel/{{ h.id }}/" class="btn btn-danger btn-sm">Reject</a>
 
-          {% elif h.status == "approved" %}
-            <a href="/super/block-hotel/{{ h.id }}/" class="btn btn-warning btn-sm">Block</a>
+<!-- PENDING TABLE -->
+<div class="table-box">
+<h4>Pending Hotel Approvals</h4>
 
-          {% elif h.status == "blocked" %}
-            <a href="/super/approve-hotel/{{ h.id }}/" class="btn btn-success btn-sm">Unblock</a>
+<table class="table table-bordered">
+<tr>
+<th>Hotel</th>
+<th>City</th>
+<th>Action</th>
+</tr>
 
-          {% elif h.status == "rejected" %}
-            Rejected
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
+{% for h in hotels %}
+{% if h.status == "PENDING" %}
+<tr>
+<td>{{ h.hotel_name }}</td>
+<td>{{ h.city }}</td>
+<td>
+<a href="/super/approve-hotel/{{h.id}}/" class="btn btn-success btn-sm">Approve</a>
+<a href="/super/reject-hotel/{{h.id}}/" class="btn btn-danger btn-sm">Reject</a>
+</td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+</div>
 
-    </table>
 
-  </div>
+<!-- LIVE TABLE -->
+<div class="table-box">
+<h4>Live Hotels</h4>
+
+<table class="table table-bordered">
+<tr>
+<th>Hotel</th>
+<th>City</th>
+<th>Status</th>
+</tr>
+
+{% for h in hotels %}
+{% if h.status == "LIVE" %}
+<tr>
+<td>{{ h.hotel_name }}</td>
+<td>{{ h.city }}</td>
+<td><span class="badge bg-success">LIVE</span></td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+</div>
+
+
+<!-- REJECTED TABLE -->
+<div class="table-box">
+<h4>Rejected Hotels</h4>
+
+<table class="table table-bordered">
+<tr>
+<th>Hotel</th>
+<th>City</th>
+<th>Reason</th>
+</tr>
+
+{% for h in hotels %}
+{% if h.status == "REJECTED" %}
+<tr>
+<td>{{ h.hotel_name }}</td>
+<td>{{ h.city }}</td>
+<td>{{ h.verification_remarks }}</td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+</div>
+
 </div>
 
 {% endblock %}

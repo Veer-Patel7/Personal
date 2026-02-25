@@ -1,11 +1,12 @@
 from django.db import models
 from accounts.models import User
-from hotels.models import Hotel, Room
+from hotels.models import Hotel, RoomType
+
 
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    room = models.ForeignKey(RoomType, on_delete=models.CASCADE)
 
     checkin_date = models.DateField()
     checkout_date = models.DateField()

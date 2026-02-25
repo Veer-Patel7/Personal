@@ -1,15 +1,15 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.utils import timezone
 from hotels.models import Hotel
 from accounts.models import User
 from bookings.models import Booking
 from payments.models import HotelCommission
 from datetime import date, timedelta
 from django.conf import settings
-
 from reviews.models import Review
 
 
@@ -38,7 +38,7 @@ def owners(request):
 #  APPROVE OWNER (pending → active)
 @login_required(login_url="/super/")
 def approve_owner(request, user_id):
-    owner = User.objects.get(id=user_id)
+    owner = get_object_or_404(User, id=user_id)
     owner.is_active = True
     owner.save()
     return redirect("/super/owners/")
@@ -47,7 +47,7 @@ def approve_owner(request, user_id):
 #  DISABLE OWNER
 @login_required(login_url="/super/")
 def disable_owner(request, user_id):
-    owner = User.objects.get(id=user_id)
+    owner = get_object_or_404(User, id=user_id)
     owner.is_active = False
     owner.save()
     return redirect("/super/owners/")
@@ -56,7 +56,7 @@ def disable_owner(request, user_id):
 #  ENABLE OWNER
 @login_required(login_url="/super/")
 def enable_owner(request, user_id):
-    owner = User.objects.get(id=user_id)
+    owner = get_object_or_404(request, id=user_id)
     owner.is_active = True
     owner.save()
     return redirect("/super/owners/")
@@ -69,17 +69,29 @@ def hotels_approve(request):
     if request.user.role != "super_admin":
         return HttpResponse("Unauthorized")
 
-    hotels = Hotel.objects.all()
+    hotels = Hotel.objects.all().order_by("-created_at")
     return render(request, "superadmin/hotels.html", {"hotels": hotels})
 
 
 @login_required(login_url="/super/")
 def approve_hotel(request, hotel_id):
-    h = Hotel.objects.get(id=hotel_id)
-    h.status = "approved"
-    h.save()
-    return redirect("/super/hotels/")
+    hotel = get_object_or_404(Hotel, id=hotel_id)
 
+    # uniqueness check
+    duplicate = Hotel.objects.filter(
+        hotel_name__iexact=hotel.hotel_name,
+        status="LIVE"
+    ).exclude(id=hotel.id).exists()
+
+    if duplicate:
+        return HttpResponse("Another LIVE hotel with same name exists.")
+
+    hotel.status = "LIVE"
+    hotel.is_live = True
+    hotel.verification_remarks = "Approved by Super Admin"
+    hotel.save()
+
+    return redirect("/super/hotels/")
 
 @login_required(login_url="/super/")
 def block_hotel(request, hotel_id):
@@ -95,22 +107,22 @@ def reject_hotel(request, hotel_id):
     if request.user.role != "super_admin":
         return HttpResponse("Unauthorized")
 
-    hotel = Hotel.objects.get(id=hotel_id)
+    hotel = get_object_or_404(Hotel, id=hotel_id)
 
     if request.method == "POST":
         reason = request.POST.get("reason")
 
-        hotel.status = "rejected"
-        hotel.reject_reason = reason
+        hotel.status = "REJECTED"
+        hotel.is_live = False
+        hotel.verification_remarks = reason
         hotel.save()
 
-        # EMAIL OWNER
         send_mail(
             "Hotel Rejected",
             f"Your hotel '{hotel.hotel_name}' was rejected.\nReason: {reason}",
             settings.EMAIL_HOST_USER,
             [hotel.owner.email],
-            fail_silently=False,
+            fail_silently=True,
         )
 
         return redirect("/super/hotels/")
@@ -122,7 +134,7 @@ def reject_hotel(request, hotel_id):
 
 @login_required(login_url="/super/")
 def bookings_manage(request):
-
+    
     if request.user.role != "super_admin":
         return HttpResponse("Unauthorized")
 
@@ -132,24 +144,14 @@ def bookings_manage(request):
 
 @login_required(login_url="/super/")
 def update_booking(request, booking_id):
+    
     if request.user.role != "super_admin":
         return HttpResponse("Unauthorized")
 
-    b = Booking.objects.get(id=booking_id)
+    b = get_object_or_404(Booking, id=booking_id)
 
     if request.method == "POST":
 
-        # SAFE DATE UPDATE
-        checkin = request.POST.get("checkin_date")
-        checkout = request.POST.get("checkout_date")
-
-        if checkin:
-            b.checkin_date = checkin
-
-        if checkout:
-            b.checkout_date = checkout
-
-        # FORCE CANCEL
         if request.POST.get("force_cancel"):
             reason = request.POST.get("reason")
 
@@ -157,7 +159,6 @@ def update_booking(request, booking_id):
             b.cancel_reason = reason
             b.save()
 
-            # EMAIL → customer
             send_mail(
                 "Booking Cancelled",
                 f"Your booking #{b.id} was cancelled.\nReason: {reason}",
@@ -166,7 +167,6 @@ def update_booking(request, booking_id):
                 fail_silently=True,
             )
 
-            # EMAIL → hotel owner
             send_mail(
                 "Booking Cancelled by Super Admin",
                 f"Booking #{b.id} cancelled.\nReason: {reason}",
@@ -177,7 +177,6 @@ def update_booking(request, booking_id):
 
             return redirect("/super/bookings/")
 
-        # NORMAL STATUS UPDATE
         status = request.POST.get("status")
         if status:
             b.booking_status = status
@@ -195,19 +194,11 @@ def payments_dashboard(request):
 @login_required(login_url="/super/")
 def generate_commission(request):
 
-    # month select from form
-    month = request.GET.get("month")
+    today = date.today()
+    month = today.month
+    year = today.year
 
-    if month:
-        year, m = month.split("-")
-        month = int(m)
-        year = int(year)
-    else:
-        today = date.today()
-        month = today.month
-        year = today.year
-
-    hotels = Hotel.objects.filter(status="approved")
+    hotels = Hotel.objects.filter(status="LIVE")
 
     for h in hotels:
 
@@ -224,7 +215,7 @@ def generate_commission(request):
         commission_percent = 10
         commission_amount = total_revenue * commission_percent / 100
 
-        due_date = date.today() + timedelta(days=5)
+        due_date = today + timedelta(days=5)
 
         HotelCommission.objects.update_or_create(
             hotel=h,
@@ -247,22 +238,14 @@ def generate_commission(request):
 def commissions(request):
 
     invoices = HotelCommission.objects.all().order_by("-id")
-
     today = date.today()
 
     for i in invoices:
 
-        # overdue check
         if i.status == "pending" and today > i.due_date:
             i.status = "overdue"
             i.penalty = i.commission_amount * 0.05
             i.save()
-
-        # auto block after 5 days overdue
-        if i.status == "overdue":
-            if today > i.due_date + timedelta(days=5):
-                i.hotel.status = "blocked"
-                i.hotel.save()
 
     return render(request, "superadmin/commissions.html", {"data": invoices})
 
@@ -301,7 +284,7 @@ def send_payment_mail(request, id):
 
     return redirect("/super/payments/invoices/")
 
-#===========CUSTOMER MANAGe==============
+#===========CUSTOMER MANAGE==============
 
 @login_required(login_url="/super/")
 def customers_manage(request):
@@ -348,33 +331,31 @@ def unblock_customer(request, user_id):
 def reviews_moderate(request):
 
     reviews = Review.objects.filter(status="delete_request")
-
     return render(request, "superadmin/reviews.html", {"reviews": reviews})
+
 
 @login_required(login_url="/super/")
 def approve_delete_review(request, id):
 
-    r = Review.objects.get(id=id)
+    r = get_object_or_404(Review, id=id)
     r.status = "deleted"
     r.save()
-
     return redirect("/super/reviews/")
 
 
 @login_required(login_url="/super/")
 def reject_delete_review(request, id):
 
-    r = Review.objects.get(id=id)
+    r = get_object_or_404(Review, id=id)
     r.status = "active"
     r.save()
-
     return redirect("/super/reviews/")
 
 
 @login_required(login_url="/super/")
 def mark_fake_review(request, id):
 
-    r = Review.objects.get(id=id)
+    r = get_object_or_404(Review, id=id)
     r.status = "fake"
     r.save()
 
