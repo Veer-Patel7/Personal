@@ -28,7 +28,7 @@
         </div>
 
         <!-- SEARCH FORM -->
-        <form method="GET" action="{% url 'search_results' %}" class="search-form">
+        <form method="POST" action="{% url 'customer:search_results' %}" class="search-form">
             {% csrf_token %}
 
             <div class="search-group">
@@ -71,8 +71,8 @@
                 <div class="hotel-card">
                     <h3>{{ hotel.hotel_name }}</h3>
                     <p><strong>Location:</strong> {{ hotel.city }}</p>
-                    <p><strong>Price:</strong> ₹ {{ hotel.min_price }} / night</p>
-                    <a href="{% url 'hotel_detail' hotel.id %}" class="btn-book">Book Now</a>
+                    <p><strong>Price:</strong> ₹ {{ hotel.rooms.price_per_night }} / night</p>
+                    <a href="{% url 'customer:hotel_detail' hotel.id %}" class="btn-book">Book Now</a>
                 </div>
                 {% endfor %}
             {% else %}
