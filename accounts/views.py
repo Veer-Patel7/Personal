@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
@@ -211,3 +210,6 @@ def verify(request):
 def user_logout(request):
     logout(request)
     return redirect("/")
+
+def auth_view(request):
+    return render(request, "customer/auth.html")

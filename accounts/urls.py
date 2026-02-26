@@ -7,7 +7,8 @@ urlpatterns = [
     # customer
     path('login/', views.customer_login, name="customer_login"),
     path('signup/', views.customer_signup, name="customer_signup"),
-
+    path("auth/", views.auth_view, name="auth"),
+    
     # hotel admin
     path('hotel/login/', views.hotel_login, name="hotel_login"),
     path('hotel/signup/', views.hotel_signup, name="hotel_signup"),
