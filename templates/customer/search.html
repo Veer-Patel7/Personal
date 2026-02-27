@@ -70,9 +70,10 @@
                 {% for hotel in hotels %}
                 <div class="hotel-card">
                     <h3>{{ hotel.hotel_name }}</h3>
-                    <p><strong>Location:</strong> {{ hotel.city }}</p>
-                    <p><strong>Price:</strong> ₹ {{ hotel.rooms.price_per_night }} / night</p>
-                    <a href="{% url 'customer:hotel_detail' hotel.id %}" class="btn-book">Book Now</a>
+                    <p><strong>Location:</strong> {{ hotel.address }}</p>
+                    <p><strong> ₹ {{ hotel.min_price }}</strong></p>
+                    <h5>₹ {{ hotel.max_price }} Totals</h5>
+                    <a href="{% url 'customer:hotel_detail' hotel.id %}" class="btn-book">View Details</a>
                 </div>
                 {% endfor %}
             {% else %}

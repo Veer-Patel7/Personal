@@ -13,7 +13,7 @@
     <!-- HOTEL HEADER -->
     <div class="hotel-header">
         <h1>{{ hotel.hotel_name }}</h1>
-        <p><i class="fa-solid fa-location-dot"></i> {{ hotel.city }}</p>
+        <p><i class="fa-solid fa-location-dot"></i> {{ hotel.address }}</p>
     </div>
 
     <!-- HOTEL IMAGE -->
@@ -35,16 +35,16 @@
     <div class="room-section">
         <h2>Available Rooms</h2>
 
-        {% if rooms %}
-            {% for room in rooms %}
+        {% if room %}
+            {% for rooms in room %}
             <div class="room-card">
 
                 <div class="room-info">
-                    <h4>{{ room.category.get_room_type_display }}</h4>
-                    <p>Room Size: {{ room.category.room_size }} sqft</p>
-                    <p>Max Guests: {{ room.category.max_guest }}</p>
+                    <h2>{{ rooms.get_room_type_display }}</h2>
+                    <p>Room Size: {{ rooms.room_size }} sqft</p>
+                    <p>Max Guests: {{ rooms.max_guests }}</p>
                     <p class="price">
-                        ₹ {{ room.category.price_per_night }} / night
+                        ₹ {{ rooms.price_per_night }} / night
                     </p>
                 </div>
 
