@@ -39,7 +39,7 @@ def customer_login(request):
         if next_url:
             return redirect(next_url)
 
-        return redirect("customer_dashboard")
+        return redirect("customer:booking_details")
 
     return render(request, "customer/auth.html")
 
@@ -105,14 +105,26 @@ def super_login(request):
 def customer_signup(request):
 
     if request.method == "POST":
+        first = request.POST.get("first_name")
+        last = request.POST.get("last_name")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        confirm = request.POST.get("confirm_password")
 
+        if password != confirm:
+            messages.error(request, "Passwords do not match")
+            # return redirect("customer_signup")
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered")
+            # return redirect("customer_signup")
         otp = generate_otp()
 
         user = User.objects.create_user(
             email=email,
             password=password,
+            first_name=first,
+            last_name=last,
             role="customer",
             otp=otp,
             is_active=False
@@ -123,12 +135,12 @@ def customer_signup(request):
             f"Your OTP is {otp}",
             settings.EMAIL_HOST_USER,
             [email],
-            fail_silently=False,
         )
 
-        return redirect(f"/verify/?email={email}")
-
-    return render(request, "customer/auth.html")
+        messages.success(request, "OTP sent to your email")
+        return redirect(f"/verify/?email={email}",user="user")
+        
+    return render(request, "customer_signup")
 
 
 # ========================== HOTEL ADMIN SIGNUP WITH OTP ==========================
