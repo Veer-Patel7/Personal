@@ -5,7 +5,8 @@ app_name = "customer"
 urlpatterns = [
     # Customer homepage
     path('', customer_search, name="home"),
-    path('search_results/', search_results, name="search_results"), 
+    path('search_results/', search_results, name="search_results"),
+    
     
     # Hotel and Room details
     path('hotel/<int:pk>/', hotel_detail, name="hotel_detail"),
