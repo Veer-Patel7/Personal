@@ -42,7 +42,7 @@ def search_results(request):
 
 def hotel_detail(request, pk):
     hotel = get_object_or_404(Hotel,pk = pk)
-    available_rooms = RoomType.objects.filter(hotel=hotel).select_related("category")
+    available_rooms = RoomType.objects.filter(hotel=hotel)
     
     return render(request, "customer/hotel_detail.html", {"hotel":hotel, "room": available_rooms})
 
