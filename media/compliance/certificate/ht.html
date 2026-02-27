@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stay Finder</title>
+</head>
+<body>
+
+    <h1>🌍 Stay Finder</h1>
+    <h3>Book hotels, villas & apartments easily</h3>
+
+    <form method="POST" action="">
+
+        <table border="1" cellpadding="10">
+            <tr>
+                <td>
+                    <b>📍 Destination</b><br>
+                    <input type="text" name="destination" 
+                           placeholder="Enter city or hotel" required>
+                </td>
+
+                <td>
+                    <b> Check-In</b><br>
+                    <input type="date" name="checkin" required>
+                </td>
+
+                <td>
+                    <b>📅 Check-Out</b><br>
+                    <input type="date" name="checkout" required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <b>👨 Adults</b><br>
+                    <select name="adults">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                </td>
+
+                <td>
+                    <b>👶 Children</b><br>
+                    <select name="children">
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                    </select>
+                </td>
+
+                <td>
+                    <b>🏨 Rooms</b><br>
+                    <select name="rooms">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3" align="center">
+                    <input type="checkbox" name="flights">
+                    Add flights to my booking
+                    <br><br>
+                    <button type="submit">🔍 Search Now</button>
+                </td>
+            </tr>
+
+        </table>
+
+    </form>
+
+</body>
+</html>

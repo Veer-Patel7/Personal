@@ -22,15 +22,15 @@ def customer_login(request):
 
         if user is None:
             messages.error(request, "Invalid email or password")
-            return redirect("customer_login")
+            return redirect("auth")
 
         if user.role != "customer":
             messages.error(request, "This is not a customer account")
-            return redirect("customer_login")
+            return redirect("auth")
 
         if not user.is_verified:
             messages.error(request, "Please verify OTP first")
-            return redirect("customer_login")
+            return redirect("auth")
 
         login(request, user)
         messages.success(request, "Customer login successful")
@@ -41,7 +41,7 @@ def customer_login(request):
 
         return redirect("customer_dashboard")
 
-    return render(request, "customer_login.html")
+    return render(request, "customer/auth.html")
 
 
 # ========================== HOTEL LOGIN ==========================
@@ -128,7 +128,7 @@ def customer_signup(request):
 
         return redirect(f"/verify/?email={email}")
 
-    return render(request, "customer_signup.html")
+    return render(request, "customer/auth.html")
 
 
 # ========================== HOTEL ADMIN SIGNUP WITH OTP ==========================
@@ -186,7 +186,7 @@ def verify(request):
             user = User.objects.get(email=email)
         except:
             messages.error(request, "User not found")
-            return redirect("/")
+            return redirect("accounts:verify")
 
         if user.otp == otp:
             user.is_verified = True
