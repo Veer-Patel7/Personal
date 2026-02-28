@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>{{ hotel.hotel_name }} | HotelPro</title>
-    <link rel="stylesheet" href="{% static 'css/hotel_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'customer/hotel_details.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -35,28 +35,30 @@
     <div class="room-section">
         <h2>Available Rooms</h2>
 
-        {% if room %}
-            {% for rooms in room %}
-            <div class="room-card">
+    {% if rooms %}
+    {% for room in rooms %}
+    <div class="room-card">
 
-                <div class="room-info">
-                    <h2>{{ rooms.get_room_type_display }}</h2>
-                    <p>Room Size: {{ rooms.room_size }} sqft</p>
-                    <p>Max Guests: {{ rooms.max_guests }}</p>
-                    <p class="price">
-                        ₹ {{ rooms.price_per_night }} / night
-                    </p>
-                </div>
+        <div class="room-info">
+            <h2>{{ room.get_room_type_display }}</h2>
+            <p>Room Size: {{ room.room_size }} sqft</p>
+            <p>Max Guests: {{ room.max_guests }}</p>
+            <p class="price">
+                ₹ {{ room.price_per_night }} / night
+            </p>
+        </div>
 
-                <div class="room-action">
-                    <a href="{% url 'accounts:auth' %}" class="book-btn">Book Now</a>
-                </div>
+        <div class="room-action">
+            <a href="{% url 'customer:booking_details' hotel.id room.id %}">
+                Book Now
+            </a>
+        </div>
 
-            </div>
-            {% endfor %}
-        {% else %}
-            <p>No available rooms right now.</p>
-        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No available rooms right now.</p>
+{% endif %}
     </div>
 
 </div>

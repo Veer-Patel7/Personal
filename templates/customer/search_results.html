@@ -20,7 +20,7 @@
                     <h3 class="hotel-name">{{ room.hotel.hotel_name }}</h3>
                     <p><strong>Location:</strong> {{ room.hotel.city }}</p>
                     <p><strong>Price:</strong> ₹{{room.price_per_night}} / night</p>
-                    <a href="{% url 'auth' %}" class="btn-book">Book Now</a>
+                    <a href="{% url 'accounts:auth' %}" class="btn-book">Book Now</a>
                 </div>
                 {% endfor %}
             {% else %}

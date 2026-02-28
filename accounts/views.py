@@ -22,24 +22,24 @@ def customer_login(request):
 
         if user is None:
             messages.error(request, "Invalid email or password")
-            return redirect("auth")
+            return redirect("accounts:auth")
 
         if user.role != "customer":
             messages.error(request, "This is not a customer account")
-            return redirect("auth")
+            return redirect("accounts:auth")
 
         if not user.is_verified:
             messages.error(request, "Please verify OTP first")
-            return redirect("auth")
+            return redirect("accounts:auth")
 
         login(request, user)
         messages.success(request, "Customer login successful")
-
+        
         next_url = request.GET.get("next")
         if next_url:
             return redirect(next_url)
 
-        return redirect("customer:booking_details")
+        return redirect("customer:home")
 
     return render(request, "customer/auth.html")
 
