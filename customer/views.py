@@ -35,6 +35,7 @@ def search_results(request):
     
     rooms = RoomType.objects.select_related('hotel')
 
+<<<<<<< Updated upstream
     if location:
         rooms = rooms.filter(hotel__city__icontains=location)
     
@@ -42,6 +43,10 @@ def search_results(request):
         rooms = rooms.filter(max_guest__gte=persons)
         
     # rooms = rooms.filter(max_guest)
+=======
+        # For simplicity, we are not filtering based on availability in this example
+        hotels = Hotel.objects.filter(city__icontains=address)
+>>>>>>> Stashed changes
 
     # if request.method == "POST":
     #     city = request.POST.get("city")
