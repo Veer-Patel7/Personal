@@ -13,10 +13,10 @@
 {% csrf_token %}
 
 Check-in:
-<input type="date" name="checkin_date" required><br>
+<input type="date" name="checkin_date"  id="checkin_date" required><br>
 
 Check-out:
-<input type="date" name="checkout_date" required><br>
+<input type="date" name="checkout_date" id="checkout_date" required><br>
 
 Adults:
 <input type="number" name="adults" min="1" required><br>
@@ -37,7 +37,37 @@ Payment:
 <button type="submit" class="btn btn-outline-primary">Continue</button>
 </form>
 
+
 <script>
+const checkin = document.getElementById("checkin_date");
+const checkout = document.getElementById("checkout_date");
+
+// ---- Get India date ----
+const indiaDate = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Kolkata"
+});
+
+checkin.min = indiaDate;
+
+// ---- Update checkout when checkin changes ----
+checkin.addEventListener("change", function () {
+    if (!this.value) return;
+
+    let checkinDate = new Date(this.value);
+    checkinDate.setDate(checkinDate.getDate() + 1);
+
+    let minCheckout = checkinDate.toLocaleDateString("en-CA", {
+        timeZone: "Asia/Kolkata"
+    });
+
+    checkout.min = minCheckout;
+
+    if (checkout.value && checkout.value <= this.value) {
+        checkout.value = "";
+    }
+});
+
+// ---- Auto total guests ----
 function updateTotal(){
     let adults = parseInt(document.querySelector('[name="adults"]').value) || 0;
     let children = parseInt(document.querySelector('[name="children"]').value) || 0;

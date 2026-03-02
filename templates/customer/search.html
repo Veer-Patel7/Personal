@@ -143,21 +143,26 @@
 const checkin = document.getElementById("checkin");
 const checkout = document.getElementById("checkout");
 
-// --- set today's date ---
-const today = new Date().toISOString().split("T")[0];
-checkin.setAttribute("min", today);
+// ---- Get India date ----
+const indiaDate = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Kolkata"
+});
 
-// --- update checkout when checkin changes ---
+checkin.min = indiaDate;
+
+// ---- Update checkout when checkin changes ----
 checkin.addEventListener("change", function () {
     if (!this.value) return;
 
     let checkinDate = new Date(this.value);
     checkinDate.setDate(checkinDate.getDate() + 1);
 
-    let minCheckout = checkinDate.toISOString().split("T")[0];
+    let minCheckout = checkinDate.toLocaleDateString("en-CA", {
+        timeZone: "Asia/Kolkata"
+    });
+
     checkout.min = minCheckout;
 
-    // reset checkout if invalid
     if (checkout.value && checkout.value <= this.value) {
         checkout.value = "";
     }
