@@ -14,6 +14,7 @@ urlpatterns = [
 
     # Booking details
     path("book/<int:hotel_id>/<int:room_id>/", views.booking_details, name="booking_details"),
+    path('booking_success/', views.booking_success, name="booking_success"),
     path("confirm/", views.confirm_booking, name="confirm_booking"),
     # Review add
     path('add-review/<int:hotel_id>/', views.add_review, name="add_review"),

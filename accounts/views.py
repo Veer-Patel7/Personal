@@ -39,7 +39,7 @@ def customer_login(request):
         if next_url:
             return redirect(next_url)
 
-        return redirect("customer:home")
+        return redirect("customer:booking_success")
 
     return render(request, "customer/auth.html")
 
