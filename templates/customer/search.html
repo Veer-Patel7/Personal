@@ -1,6 +1,36 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+<style>
+    html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: black;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        section {
+            height: 100vh;
+            padding-top: 120px;
+            text-align: center;
+        }
+
+</style>
 <head>
     <title>Search Hotels | HotelPro</title>
     <link rel="stylesheet" href="{% static 'customer/search.css' %}">
@@ -14,12 +44,18 @@
         <!-- NAVBAR -->
         <div class="navbar">
             <h2 class="logo">HotelPro</h2>
-
+            
+                <nav>
+                    
+                    <a href="#hotels">Hotels</a> 
+                    <a href="#contact">Contact</a>
+                    <a href="#about">About</a>
+                </nav>
             <div>
                 <a href="{% url 'accounts:auth' %}" class="signin-btn">Sign In</a>
             </div>
         </div>
-
+            
         <!-- HERO TEXT -->
         <div class="hero-content">
             <h1>WELCOME TO  HOTEL PRO</h1>
@@ -62,7 +98,11 @@
     </div>
 
     <!-- RESULTS SECTION -->
-    <section class="results-section">
+     <!-- HOTELS -->
+    <section id="hotels">
+        <h1>Hotels</h1>
+        <p>Available hotel listings will appear here.</p>
+     <section class="results-section">
         <h2 class="section-title">Available Hotels</h2>
 
         <div class="hotel-container">
@@ -80,6 +120,7 @@
                 <p>No hotels found.</p>
             {% endif %}
         </div>
+     </section>
     </section>
 
     <script>
@@ -108,4 +149,4 @@ checkin.addEventListener("change", function () {
 </script>
 
 </body>
-</html>
+</html> 
