@@ -12,18 +12,42 @@
 <form method="POST">
 {% csrf_token %}
 
-Check-in: <input type="date" name="checkin_date" required><br>
-Check-out: <input type="date" name="checkout_date" required><br>
-Guests: <input type="number" name="guests" required><br>
-{% comment %} Aadhaar_no: <input type="number" name="aadhaar_no" required><br> {% endcomment %}
+Check-in:
+<input type="date" name="checkin_date" required><br>
 
-Payment: <select name="payment">
+Check-out:
+<input type="date" name="checkout_date" required><br>
+
+Adults:
+<input type="number" name="adults" min="1" required><br>
+
+Children:
+<input type="number" name="children" min="0" required><br>
+
+Total Guests:
+<input type="number" name="total_guests" id="total" readonly><br>
+
+Payment:
+<select name="payment_method">
     <option value="cash">Cash</option>
     <option value="card">Card</option>
     <option value="upi">UPI</option>
 </select>
+
 <button type="submit" class="btn btn-outline-primary">Continue</button>
 </form>
+
+<script>
+function updateTotal(){
+    let adults = parseInt(document.querySelector('[name="adults"]').value) || 0;
+    let children = parseInt(document.querySelector('[name="children"]').value) || 0;
+    document.getElementById("total").value = adults + children;
+}
+
+document.querySelector('[name="adults"]').addEventListener("input", updateTotal);
+document.querySelector('[name="children"]').addEventListener("input", updateTotal);
+</script>
+
 </body>
 </html>
 {% comment %} <label>First Name</label><br>

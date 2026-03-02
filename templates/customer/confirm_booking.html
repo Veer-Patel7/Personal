@@ -14,9 +14,11 @@ Hotel: {{ hotel.hotel_name }} <br>
 Room: {{ room.room_type }} <br>
 Checkin: {{ data.check_in_date }} <br>
 Checkout: {{ data.check_out_date }} <br>
-Guests: {{ data.guests }} <br>
+Guests: {{ data.total_guests }} <br>
+Adults: {{ data.adults }} <br>
+Children: {{ data.children }} <br>
 {% comment %} Adhar card no: {{ data.aadhaar_no }} <br> {% endcomment %}
-Payment: {{ data.payment }} <br>
+Payment: {{ data.payment_method }} <br>
 
 <form method="POST">
 {% csrf_token %}

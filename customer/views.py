@@ -63,11 +63,12 @@ def booking_details(request, hotel_id, room_id):
         request.session["booking_data"] = {
             "hotel_id": hotel.id,
             "room_id": room.id,
-            "check_in_date": request.POST.get("checkin_date"),
-            "check_out_date": request.POST.get("checkout_date"),
-            "guests": request.POST.get("guests"),
-            # "aadhaar_no": request.POST.get("aadhaar_no"),
-            "payment": request.POST.get("payment"),
+            "checkin_date": request.POST.get("checkin_date"),
+            "checkout_date": request.POST.get("checkout_date"),
+            "total_guests": request.POST.get("total_guests"),
+            "adults": request.POST.get("adults"),
+            "children": request.POST.get("children"),
+            "payment_method": request.POST.get("payment_method"),
         }
         return redirect("customer:confirm_booking")
 
@@ -90,13 +91,24 @@ def confirm_booking(request):
     if request.method == "POST":
         Booking.objects.create(
             user=request.user,
-            hotel=hotel,
-            room=room,
-            checkin_date=data["check_in_date"],
-            checkout_date=data["check_out_date"],
-            # aadhaar_id=data["aadhaar_no"],
-            payment_method=data["payment"],
+            hotel_id=data["hotel_id"],
+            room_id=data["room_id"],
+            checkin_date=data["checkin_date"],
+            checkout_date=data["checkout_date"],
+            total_guests=data["total_guests"],
+            adults=data["adults"],
+            children=data["children"],
+            payment_method=data["payment_method"],
         )
+        # Booking.objects.create(
+        #     user=request.user,
+        #     hotel=hotel,
+        #     room=room,
+        #     checkin_date=data["check_in_date"],
+        #     checkout_date=data["check_out_date"],
+        #     # aadhaar_id=data["aadhaar_no"],
+        #     payment_method=data["payment"],
+        # )
 
         del request.session["booking_data"]
         return redirect("accounts:auth")
