@@ -28,7 +28,7 @@
         </div>
 
         <!-- SEARCH FORM -->
-        <form method="POST" action="{% url 'customer:search_results' %}" class="search-form">
+        <form method="GET" action="{% url 'customer:search_results' %}" class="search-form">
             {% csrf_token %}
 
             <div class="search-group">

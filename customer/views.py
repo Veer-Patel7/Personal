@@ -27,16 +27,16 @@ def customer_search(request):
 
 
 def search_results(request):
-    location = request.GET.get("location")
+    location = request.GET.get("location", "").strip()
     persons = request.GET.get("persons")
 
     rooms = RoomType.objects.select_related("hotel")
 
     if location:
-        rooms = rooms.filter(hotel__city__icontains=location)
+        rooms = rooms.filter(hotel__address__icontains=location)
 
     if persons:
-        rooms = rooms.filter(max_guest__gte=persons)
+        rooms = rooms.filter(max_guests__gte=persons)
 
     return render(request, "customer/search_results.html", {"rooms": rooms})
 
