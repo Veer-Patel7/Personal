@@ -28,7 +28,7 @@
         </div>
 
         <!-- SEARCH FORM -->
-        <form method="POST" action="{% url 'customer:search_results' %}" class="search-form">
+        <form method="GET" action="{% url 'customer:search_results' %}" class="search-form">
             {% csrf_token %}
 
             <div class="search-group">
@@ -38,12 +38,12 @@
 
             <div class="search-group">
                 <label>Check-in</label>
-                <input type="date" name="checkin">
+                <input type="date" name="checkin" id="checkin">
             </div>
 
             <div class="search-group">
                 <label>Check-out</label>
-                <input type="date" name="checkout">
+                <input type="date" name="checkout" id="checkout">
             </div>
 
             <div class="search-group">
@@ -81,6 +81,31 @@
             {% endif %}
         </div>
     </section>
+
+    <script>
+const checkin = document.getElementById("checkin");
+const checkout = document.getElementById("checkout");
+
+// --- set today's date ---
+const today = new Date().toISOString().split("T")[0];
+checkin.setAttribute("min", today);
+
+// --- update checkout when checkin changes ---
+checkin.addEventListener("change", function () {
+    if (!this.value) return;
+
+    let checkinDate = new Date(this.value);
+    checkinDate.setDate(checkinDate.getDate() + 1);
+
+    let minCheckout = checkinDate.toISOString().split("T")[0];
+    checkout.min = minCheckout;
+
+    // reset checkout if invalid
+    if (checkout.value && checkout.value <= this.value) {
+        checkout.value = "";
+    }
+});
+</script>
 
 </body>
 </html>

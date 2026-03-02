@@ -10,8 +10,8 @@ class Booking(models.Model):
 
     checkin_date = models.DateField()
     checkout_date = models.DateField()
-
-    aadhaar_id = models.CharField(max_length=20)
+    
+    # aadhaar_id = models.CharField(max_length=20)
     payment_method = models.CharField(max_length=20, default="cash")
     booking_status = models.CharField(max_length=20, default="pending")
     
