@@ -6,7 +6,7 @@ from . import views
 app_name = 'hotels'
 # URL Patterns
 urlpatterns = [
-   
+
     # Template-based views
     path('register/', views.add_hotel, name='hotelregister'),
     path('dashboard/<int:hotel_id>/', views.hotel_dashboard, name='hotel_dashboard'),
