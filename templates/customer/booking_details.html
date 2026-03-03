@@ -18,11 +18,12 @@ Check-in:
 Check-out:
 <input type="date" name="checkout_date" id="checkout_date" required><br>
 
+<p>Maximum allowed guests: {{ room.max_guests }}</p>
 Adults:
-<input type="number" name="adults" min="1" required><br>
+<input type="number" id="adults" name="adults" min="1" max="{{ room.max_guests }}" required><br>
 
-Children:
-<input type="number" name="children" min="0" required><br>
+Children:   
+<input type="number" id="children" name="children" min="0" max="{{ room.max_guests }}" required><br>
 
 Total Guests:
 <input type="number" name="total_guests" id="total" readonly><br>
@@ -38,7 +39,12 @@ Payment:
 </form>
 
 
+
+
 <script>
+
+
+
 const checkin = document.getElementById("checkin_date");
 const checkout = document.getElementById("checkout_date");
 
@@ -68,10 +74,21 @@ checkin.addEventListener("change", function () {
 });
 
 // ---- Auto total guests ----
+const maxGuests = {{ room.max_guests }};
+
 function updateTotal(){
-    let adults = parseInt(document.querySelector('[name="adults"]').value) || 0;
-    let children = parseInt(document.querySelector('[name="children"]').value) || 0;
-    document.getElementById("total").value = adults + children;
+    let adults = parseInt(document.getElementById("adults").value) || 0;
+    let children = parseInt(document.getElementById("children").value) || 0;
+
+    let total = adults + children;
+
+    if (total > maxGuests) {
+        alert("Total guests cannot exceed " + maxGuests);
+        document.getElementById("children").value = 0;
+        total = adults;
+    }
+
+    document.getElementById("total").value = total;
 }
 
 document.querySelector('[name="adults"]').addEventListener("input", updateTotal);
