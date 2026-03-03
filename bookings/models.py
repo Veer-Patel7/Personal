@@ -12,9 +12,9 @@ class Booking(models.Model):
     checkout_date = models.DateField()
     
     # aadhaar_id = models.CharField(max_length=20)
-    total_guests = models.SmallIntegerField()
-    adults = models.SmallIntegerField()
-    children = models.SmallIntegerField()
+    total_guests = models.SmallIntegerField(null=True, blank=True)
+    adults = models.SmallIntegerField(null=True, blank=True)
+    children = models.SmallIntegerField(null=True, blank=True)
     payment_method = models.CharField(max_length=20, default="cash")
     booking_status = models.CharField(max_length=20, default="confirm")
     

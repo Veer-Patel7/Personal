@@ -100,15 +100,6 @@ def confirm_booking(request):
             children=data["children"],
             payment_method=data["payment_method"],
         )
-        # Booking.objects.create(
-        #     user=request.user,
-        #     hotel=hotel,
-        #     room=room,
-        #     checkin_date=data["check_in_date"],
-        #     checkout_date=data["check_out_date"],
-        #     # aadhaar_id=data["aadhaar_no"],
-        #     payment_method=data["payment"],
-        # )
 
         del request.session["booking_data"]
         return redirect("accounts:auth")

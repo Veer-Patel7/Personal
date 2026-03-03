@@ -25,7 +25,7 @@ body::before{
     z-index:0;
 }
 
-/* ===== NAVBAR ===== */
+/* ===== NAVBAR (Sticky Instead of Fixed) ===== */
 .navbar{
     width:100%;
     padding:18px 40px;
@@ -33,22 +33,19 @@ body::before{
     color:white;
     font-size:22px;
     font-weight:600;
-    position:fixed;
-    z-index:2;
+    position:sticky;
+    top:0;
+    z-index:1000;
 }
 
-.logo{
-    max-width:1200px;
-}
-
-/* ===== PAGE TITLE (Navbar niche) ===== */
-.page-title{
+/* ===== PAGE TITLE ===== */
+h2{
     position:relative;
     z-index:2;
     color:white;
     font-size:30px;
     font-weight:600;
-    margin:40px 0 20px 0;
+    margin:30px 0 20px 0;
     text-align:center;
 }
 
@@ -63,6 +60,7 @@ form{
     box-shadow:0 20px 40px rgba(0,0,0,0.3);
     display:flex;
     flex-direction:column;
+    margin-bottom:120px; /* Scroll test mate space */
 }
 
 /* ===== INPUTS ===== */
@@ -80,6 +78,7 @@ form select{
 form input:focus,
 form select:focus{
     border-color:#4f46e5;
+    box-shadow:0 0 0 2px rgba(79,70,229,0.1);
 }
 
 /* ===== TOTAL FIELD ===== */
@@ -98,8 +97,10 @@ form button{
     border-radius:10px;
     font-weight:600;
     cursor:pointer;
+    transition:0.3s ease;
 }
 
 form button:hover{
     background:linear-gradient(90deg,#4338ca,#4f46e5);
+    transform:translateY(-2px);
 }

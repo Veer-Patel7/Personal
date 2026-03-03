@@ -20,10 +20,12 @@
             <div class="booking-details">
                 <p><span>Hotel</span> <strong>{{ hotel.hotel_name }}</strong></p>
                 <p><span>Room</span> <strong>{{ room.room_type }}</strong></p>
-                <p><span>Check-in</span> <strong>{{ data.check_in_date }}</strong></p>
-                <p><span>Check-out</span> <strong>{{ data.check_out_date }}</strong></p>
-                <p><span>Guests</span> <strong>{{ data.guests }}</strong></p>
-                <p><span>Payment</span> <strong>{{ data.payment }}</strong></p>
+                <p><span>Check-in</span> <strong>{{ data.checkin_date }}</strong></p>
+                <p><span>Check-out</span> <strong>{{ data.checkout_date }}</strong></p>
+                <p><span>Guests</span> <strong>{{ data.total_guests }}</strong></p>
+                <p><span>Adults</span> <strong>{{ data.adults }}</strong></p>
+                <p><span>Children</span> <strong>{{ data.children }}</strong></p>
+                <p><span>Payment</span> <strong>{{ data.payment_method }}</strong></p>
             </div>
 
             <form method="POST">
