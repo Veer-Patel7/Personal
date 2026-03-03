@@ -4,39 +4,47 @@
 <head>
     <title>Guest Details</title>
     <link rel="stylesheet" href="{% static 'customer/booking_details.css' %}">
-    
 </head>
 <body>
 
-<h2>Enter Guest Details</h2>
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">HotelPro</div>
+</div>
+<br><br><br><br><br>
+<!-- PAGE TITLE -->
+<h2 class="page-title">Enter Guest Details</h2>
 
+<!-- FORM CARD -->
 <form method="POST">
 {% csrf_token %}
 
+<label>Check-in:</label>
+<input type="date" name="checkin_date" id="checkin_date" required>
 
-Check-in:
-<input type="date" name="checkin_date"  id="checkin_date" required><br>
+<label>Check-out:</label>
+<input type="date" name="checkout_date" id="checkout_date" required>
 
-Check-out:
-<input type="date" name="checkout_date" id="checkout_date" required><br>
+<p class="max-guest">Maximum allowed guests: {{ room.max_guests }}</p>
 
-<p>Maximum allowed guests: {{ room.max_guests }}</p>
-Adults:
-<input type="number" id="adults" name="adults" min="1" max="{{ room.max_guests }}" required><br>
+<label>Adults:</label>
+<input type="number" id="adults" name="adults" min="1" max="{{ room.max_guests }}" required>
 
-Children:   
-<input type="number" id="children" name="children" min="0" max="{{ room.max_guests }}" required><br>
+<label>Children:</label>
+<input type="number" id="children" name="children" min="0" max="{{ room.max_guests }}" required>
 
-Total Guests:
-<input type="number" name="total_guests" id="total" readonly><br>
+<label>Total Guests:</label>
+<input type="number" name="total_guests" id="total" readonly>
 
-Payment:
+<label>Payment:</label>
 <select name="payment_method">
     <option value="cash">Cash</option>
     <option value="card">Card</option>
     <option value="upi">UPI</option>
 </select>
-<button type="submit" class="btn btn-outline-primary">Continue</button>
+
+<button type="submit">Continue</button>
+
 </form>
 
 <script>
@@ -44,14 +52,13 @@ Payment:
 const checkin = document.getElementById("checkin_date");
 const checkout = document.getElementById("checkout_date");
 
-// ---- Get India date ----
+// India date
 const indiaDate = new Date().toLocaleDateString("en-CA", {
     timeZone: "Asia/Kolkata"
 });
 
 checkin.min = indiaDate;
 
-// ---- Update checkout when checkin changes ----
 checkin.addEventListener("change", function () {
     if (!this.value) return;
 
@@ -69,7 +76,7 @@ checkin.addEventListener("change", function () {
     }
 });
 
-// ---- Auto total guests ----
+// Auto total
 const maxGuests = {{ room.max_guests }};
 
 function updateTotal(){
@@ -87,11 +94,10 @@ function updateTotal(){
     document.getElementById("total").value = total;
 }
 
-document.querySelector("[name='adults']").addEventListener("input", updateTotal);
-document.querySelector("[name='children']").addEventListener("input", updateTotal);
+document.getElementById("adults").addEventListener("input", updateTotal);
+document.getElementById("children").addEventListener("input", updateTotal);
+
 </script>
+
 </body>
 </html>
-
-
-

@@ -6,16 +6,14 @@
     font-family:'Poppins', sans-serif;
 }
 
-/* ===== BODY BACKGROUND ===== */
+/* ===== BODY ===== */
 body{
     min-height:100vh;
     background:url("../image/Hotel.jpg") center/cover no-repeat;
     display:flex;
     flex-direction:column;
-    justify-content:center;
     align-items:center;
     position:relative;
-    overflow-x:hidden;
 }
 
 /* ===== DARK OVERLAY ===== */
@@ -27,14 +25,30 @@ body::before{
     z-index:0;
 }
 
-/* ===== PAGE TITLE ===== */
-h2{
+/* ===== NAVBAR ===== */
+.navbar{
+    width:100%;
+    padding:18px 40px;
+    background:linear-gradient(90deg,#4f46e5,#3b82f6);
+    color:white;
+    font-size:22px;
+    font-weight:600;
+    position:fixed;
+    z-index:2;
+}
+
+.logo{
+    max-width:1200px;
+}
+
+/* ===== PAGE TITLE (Navbar niche) ===== */
+.page-title{
     position:relative;
     z-index:2;
     color:white;
-    font-size:32px;
+    font-size:30px;
     font-weight:600;
-    margin-bottom:25px;
+    margin:40px 0 20px 0;
     text-align:center;
 }
 
@@ -51,13 +65,6 @@ form{
     flex-direction:column;
 }
 
-/* ===== TEXT INFO ===== */
-form p{
-    font-size:14px;
-    margin-top:8px;
-    color:#555;
-}
-
 /* ===== INPUTS ===== */
 form input,
 form select{
@@ -68,13 +75,11 @@ form select{
     border-radius:10px;
     outline:none;
     font-size:14px;
-    transition:0.3s;
 }
 
 form input:focus,
 form select:focus{
     border-color:#4f46e5;
-    box-shadow:0 0 0 2px rgba(79,70,229,0.1);
 }
 
 /* ===== TOTAL FIELD ===== */
@@ -93,10 +98,8 @@ form button{
     border-radius:10px;
     font-weight:600;
     cursor:pointer;
-    transition:0.3s;
 }
 
 form button:hover{
     background:linear-gradient(90deg,#4338ca,#4f46e5);
-    transform:translateY(-2px);
 }
