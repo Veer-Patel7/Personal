@@ -1,56 +1,40 @@
 {% load static %}
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Confirm Booking</title>
-    <link rel="stylesheet" href="{% static 'customer/confir_mbooking.css' %}">
+    <title>Confirm Booking | HotelPro</title>
+    <link rel="stylesheet" href="{% static 'customer/confirm_booking.css' %}">
 </head>
+
 <body>
 
-<div class="navbar">HotelPro</div>
+    <!-- NAVBAR -->
+    <div class="navbar">HotelPro</div>
 
-<h2>Confirm Booking</h2>
+    <!-- CENTER CARD -->
+    <div class="confirm-wrapper">
+        <div class="confirm-card">
 
-Hotel: {{ hotel.hotel_name }} <br>
-Room: {{ room.room_type }} <br>
-Checkin: {{ data.check_in_date }} <br>
-Checkout: {{ data.check_out_date }} <br>
-Guests: {{ data.total_guests }} <br>
-Adults: {{ data.adults }} <br>
-Children: {{ data.children }} <br>
-{% comment %} Adhar card no: {{ data.aadhaar_no }} <br> {% endcomment %}
-Payment: {{ data.payment_method }} <br>
+            <h2>Confirm Booking</h2>
 
-<form method="POST">
-{% csrf_token %}
-<button type="submit">Confirm Booking</button>
-</form>
+            <div class="booking-details">
+                <p><span>Hotel</span> <strong>{{ hotel.hotel_name }}</strong></p>
+                <p><span>Room</span> <strong>{{ room.room_type }}</strong></p>
+                <p><span>Check-in</span> <strong>{{ data.check_in_date }}</strong></p>
+                <p><span>Check-out</span> <strong>{{ data.check_out_date }}</strong></p>
+                <p><span>Guests</span> <strong>{{ data.guests }}</strong></p>
+                <p><span>Payment</span> <strong>{{ data.payment }}</strong></p>
+            </div>
 
-{% comment %} <div class="confirm-container">
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="confirm-btn">
+                    Confirm Booking
+                </button>
+            </form>
 
-    <h2>Booking Confirmation</h2>
-
-    <div class="section">
-        <h3>Customer Details</h3>
-        <p><strong>Name:</strong> {{ customer.name }}</p>
-        <p><strong>Email:</strong> {{ customer.email }}</p>
-        <p><strong>Mobile:</strong> {{ customer.mobile }}</p>
+        </div>
     </div>
-
-    <div class="section">
-        <h3>Booking Details</h3>
-        <p><strong>Check-in Date:</strong> {{ booking.check_in }}</p>
-        <p><strong>Check-out Date:</strong> {{ booking.check_out }}</p>
-        <p><strong>Room Type:</strong> {{ booking.room_type }}</p>
-        <p><strong>Guests:</strong> {{ booking.guests }}</p>
-        <p class="price"><strong>Total Price:</strong> ₹ {{ booking.total_price }}</p>
-    </div>
-
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit" class="confirm-btn">Confirm Booking</button>
-    </form>
-
-</div> {% endcomment %}
 
 </body>
 </html>
