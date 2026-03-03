@@ -86,7 +86,7 @@ def hotel_login(request):
             return redirect('/hotel/register/')
 
 
-    return render(request, "hotel_login.html")
+    return render(request, "accounts/hotel_login.html")
 
 # ========================== SUPER ADMIN LOGIN ==========================
 def super_login(request):
@@ -108,7 +108,7 @@ def super_login(request):
         messages.success(request, "Super admin login successful")
         return redirect("super_dashboard")
 
-    return render(request, "super_login.html")
+    return render(request, "accounts/super_login.html")
 
 # ========================== CUSTOMER SIGNUP WITH OTP ==========================
 def customer_signup(request):
@@ -191,7 +191,7 @@ def hotel_signup(request):
         messages.success(request, "OTP sent to your email")
         return redirect(f"/verify/?email={email}")
 
-    return render(request, "hotel_signup.html")
+    return render(request, "accounts/hotel_signup.html")
 
 # ========================== VERIFY OTP ==========================
 def verify(request):
