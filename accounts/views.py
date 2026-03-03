@@ -44,14 +44,16 @@ def customer_login(request):
             messages.error(request, "Please verify OTP first")
             return redirect("accounts:auth")
 
+        # ✅ LOGIN FIRST
         login(request, user)
-        messages.success(request, "Customer login successful")
-        
-        next_url = request.GET.get("next")
+
+        # ✅ THEN HANDLE NEXT
+        next_url = request.GET.get("next") or request.POST.get("next")
         if next_url:
             return redirect(next_url)
 
-        return redirect("customer:booking_success")
+        messages.success(request, "Customer login successful")
+        return redirect("customer:home")
 
     return render(request, "customer/auth.html")
 

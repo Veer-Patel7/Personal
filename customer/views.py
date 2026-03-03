@@ -4,6 +4,8 @@ from hotels.models import Hotel, RoomType
 from bookings.models import Booking
 from reviews.models import Review
 from django.db.models import Min, Max
+from datetime import date
+from decimal import Decimal
 
 
 @login_required(login_url="/login/")
@@ -58,6 +60,7 @@ def room_select(request, room_id):
 def booking_details(request, hotel_id, room_id):
     hotel = get_object_or_404(Hotel, id=hotel_id)
     room = get_object_or_404(RoomType, id=room_id)
+    
 
     if request.method == "POST":
         request.session["booking_data"] = {
@@ -69,6 +72,7 @@ def booking_details(request, hotel_id, room_id):
             "adults": request.POST.get("adults"),
             "children": request.POST.get("children"),
             "payment_method": request.POST.get("payment_method"),
+            # "total_price" : total_price,
         }
         return redirect("customer:confirm_booking")
 
@@ -78,8 +82,11 @@ def booking_details(request, hotel_id, room_id):
     })
 
 
+
 @login_required
 def confirm_booking(request):
+    print("User:", request.user)
+    print("Authenticated:", request.user.is_authenticated)
     data = request.session.get("booking_data")
 
     if not data:
@@ -88,29 +95,38 @@ def confirm_booking(request):
     hotel = Hotel.objects.get(id=data["hotel_id"])
     room = RoomType.objects.get(id=data["room_id"])
 
+    checkin = date.fromisoformat(data["checkin_date"])
+    checkout = date.fromisoformat(data["checkout_date"])
+    
+    nights = (checkout - checkin).days
+    total_price = nights * room.price_per_night
+
     if request.method == "POST":
         Booking.objects.create(
             user=request.user,
             hotel_id=data["hotel_id"],
             room_id=data["room_id"],
-            checkin_date=data["checkin_date"],
-            checkout_date=data["checkout_date"],
+            checkin_date=checkin,
+            checkout_date=checkout,
             total_guests=data["total_guests"],
             adults=data["adults"],
             children=data["children"],
             payment_method=data["payment_method"],
+            total_price=total_price
         )
 
         del request.session["booking_data"]
-        return redirect("accounts:auth")
+        return redirect("customer:booking_success")
 
     return render(request, "customer/confirm_booking.html", {
         "data": data,
         "room": room,
-        "hotel": hotel
+        "hotel": hotel,
+        "nights": nights,
+        "total_price": total_price
     })
-
-
+    
+# @login_required
 def booking_success(request):
     if request.method == "POST":
         return redirect("customer:home")

@@ -16,6 +16,7 @@ class Booking(models.Model):
     adults = models.SmallIntegerField(null=True, blank=True)
     children = models.SmallIntegerField(null=True, blank=True)
     payment_method = models.CharField(max_length=20, default="cash")
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     booking_status = models.CharField(max_length=20, default="confirm")
     
     cancel_reason = models.TextField(null=True, blank=True)
