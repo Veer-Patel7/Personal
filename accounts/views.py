@@ -215,7 +215,7 @@ def verify(request):
 
         messages.error(request, "Invalid OTP")
 
-    return render(request, "verify.html", {"email": email})
+    return render(request, "customer/verify.html", {"email": email})
 
 
 # ========================== LOGOUT ==========================

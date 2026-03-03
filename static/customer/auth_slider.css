@@ -23,7 +23,7 @@ body{
     position:absolute;
     top:0;
     width:100%;
-    background:rgba(59,131,246,0.75);
+    background:#054ab9;
     backdrop-filter:blur(6px);
     color:white;
     padding:15px 40px;
