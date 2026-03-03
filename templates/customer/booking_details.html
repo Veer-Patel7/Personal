@@ -13,41 +13,82 @@
 <form method="POST">
 {% csrf_token %}
 
-Check-in: <input type="date" name="checkin_date" required><br>
-Check-out: <input type="date" name="checkout_date" required><br>
-Guests: <input type="number" name="guests" required><br>
-{% comment %} Aadhaar_no: <input type="number" name="aadhaar_no" required><br> {% endcomment %}
 
-Payment: <select name="payment">
+Check-in:
+<input type="date" name="checkin_date"  id="checkin_date" required><br>
+
+Check-out:
+<input type="date" name="checkout_date" id="checkout_date" required><br>
+
+<p>Maximum allowed guests: {{ room.max_guests }}</p>
+Adults:
+<input type="number" id="adults" name="adults" min="1" max="{{ room.max_guests }}" required><br>
+
+Children:   
+<input type="number" id="children" name="children" min="0" max="{{ room.max_guests }}" required><br>
+
+Total Guests:
+<input type="number" name="total_guests" id="total" readonly><br>
+
+Payment:
+<select name="payment_method">
     <option value="cash">Cash</option>
     <option value="card">Card</option>
     <option value="upi">UPI</option>
 </select>
 <button type="submit" class="btn btn-outline-primary">Continue</button>
 </form>
+
 <script>
-const checkin = document.getElementById("checkin");
-const checkout = document.getElementById("checkout");
 
-// --- set today's date ---
-const today = new Date().toISOString().split("T")[0];
-checkin.setAttribute("min", today);
+const checkin = document.getElementById("checkin_date");
+const checkout = document.getElementById("checkout_date");
 
-// --- update checkout when checkin changes ---
+// ---- Get India date ----
+const indiaDate = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Kolkata"
+});
+
+checkin.min = indiaDate;
+
+// ---- Update checkout when checkin changes ----
 checkin.addEventListener("change", function () {
     if (!this.value) return;
 
     let checkinDate = new Date(this.value);
     checkinDate.setDate(checkinDate.getDate() + 1);
 
-    let minCheckout = checkinDate.toISOString().split("T")[0];
+    let minCheckout = checkinDate.toLocaleDateString("en-CA", {
+        timeZone: "Asia/Kolkata"
+    });
+
     checkout.min = minCheckout;
 
-    // reset checkout if invalid
     if (checkout.value && checkout.value <= this.value) {
         checkout.value = "";
     }
 });
+
+// ---- Auto total guests ----
+const maxGuests = {{ room.max_guests }};
+
+function updateTotal(){
+    let adults = parseInt(document.getElementById("adults").value) || 0;
+    let children = parseInt(document.getElementById("children").value) || 0;
+
+    let total = adults + children;
+
+    if (total > maxGuests) {
+        alert("Total guests cannot exceed " + maxGuests);
+        document.getElementById("children").value = 0;
+        total = adults;
+    }
+
+    document.getElementById("total").value = total;
+}
+
+document.querySelector("[name='adults']").addEventListener("input", updateTotal);
+document.querySelector("[name='children']").addEventListener("input", updateTotal);
 </script>
 </body>
 </html>

@@ -6,67 +6,56 @@
     font-family:'Poppins', sans-serif;
 }
 
-/* Prevent horizontal scroll */
-html, body{
-    overflow-x:hidden;
-}
-
 /* ===== BODY BACKGROUND ===== */
 body{
     min-height:100vh;
     background:url("../image/Hotel.jpg") center/cover no-repeat;
     display:flex;
+    flex-direction:column;
     justify-content:center;
     align-items:center;
     position:relative;
+    overflow-x:hidden;
 }
 
-/* Dark overlay */
+/* ===== DARK OVERLAY ===== */
 body::before{
     content:"";
     position:absolute;
     inset:0;
-    background:rgba(0,0,0,0.45);
+    background:rgba(0,0,0,0.5);
     z-index:0;
 }
 
-/* ===== TOP NAVBAR ===== */
-body::after{
-    content:"HotelPro";
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;                     /* FIXED */
-    padding:18px 40px;
-    font-size:22px;
-    font-weight:600;
-    color:white;
-    background:linear-gradient(90deg,#4f46e5,#3b82f6);
-    box-sizing:border-box;       /* IMPORTANT */
-    z-index:2;
-}
-
-/* ===== HEADING ===== */
+/* ===== PAGE TITLE ===== */
 h2{
-    position:absolute;
-    top:110px;
-    color:white;
-    font-size:26px;
+    position:relative;
     z-index:2;
+    color:white;
+    font-size:32px;
+    font-weight:600;
+    margin-bottom:25px;
+    text-align:center;
 }
 
 /* ===== FORM CARD ===== */
 form{
     position:relative;
     z-index:2;
-    width:400px;
+    width:420px;
     background:white;
-    padding:40px;
-    border-radius:25px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.25);
+    padding:35px 40px;
+    border-radius:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.3);
     display:flex;
     flex-direction:column;
-    margin-top:80px;
+}
+
+/* ===== TEXT INFO ===== */
+form p{
+    font-size:14px;
+    margin-top:8px;
+    color:#555;
 }
 
 /* ===== INPUTS ===== */
@@ -74,9 +63,9 @@ form input,
 form select{
     width:100%;
     padding:12px;
-    margin:12px 0;
+    margin:8px 0 15px 0;
     border:1px solid #ddd;
-    border-radius:12px;
+    border-radius:10px;
     outline:none;
     font-size:14px;
     transition:0.3s;
@@ -85,16 +74,23 @@ form select{
 form input:focus,
 form select:focus{
     border-color:#4f46e5;
+    box-shadow:0 0 0 2px rgba(79,70,229,0.1);
+}
+
+/* ===== TOTAL FIELD ===== */
+#total{
+    background:#f3f4f6;
+    font-weight:600;
 }
 
 /* ===== BUTTON ===== */
 form button{
-    margin-top:15px;
+    margin-top:10px;
     padding:12px;
     background:linear-gradient(90deg,#4f46e5,#6366f1);
     color:white;
     border:none;
-    border-radius:12px;
+    border-radius:10px;
     font-weight:600;
     cursor:pointer;
     transition:0.3s;
@@ -102,4 +98,5 @@ form button{
 
 form button:hover{
     background:linear-gradient(90deg,#4338ca,#4f46e5);
+    transform:translateY(-2px);
 }
